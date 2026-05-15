@@ -10,6 +10,8 @@ export function renderMainMenu(container: HTMLElement): void {
     <div class="main-menu__bg">
       <img src="/cover.png" alt="" class="main-menu__bg-img" />
       <div class="main-menu__bg-vignette"></div>
+      <div class="main-menu__particles" aria-hidden="true"></div>
+      <div class="main-menu__lightning" aria-hidden="true"></div>
     </div>
 
     <div class="main-menu__content">
@@ -18,6 +20,11 @@ export function renderMainMenu(container: HTMLElement): void {
       <div class="main-menu__title-block">
         <h1 class="main-menu__title">Corporate Clash</h1>
         <p class="main-menu__subtitle">The Office Battle Card Game</p>
+      </div>
+
+      <div class="main-menu__rating">
+        <span class="main-menu__rating-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span>Rated 5.0 on Glassdoor &middot; Q4 Edition</span>
       </div>
 
       <div class="main-menu__panel">
