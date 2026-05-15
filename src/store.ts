@@ -44,6 +44,8 @@ export function saveDeck(deck: string[]): void {
 }
 
 export function setBattle(battle: BattleState | null): void {
+  // Battle state is owned by the battle scene; the store just mirrors it.
+  // Don't notify — re-rendering the whole app on every action would re-run
+  // startTutorial() / initBattle() and clobber the in-progress game.
   state = { ...state, battle };
-  notify();
 }
