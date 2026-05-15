@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@500;700&family=Courier+Prime&display=swap');
+
+:root {
+  --beige: #E8DFCF;
+  --teal: #3D6B7A;
+  --warm-gray: #8B8378;
+  --gold: #C9A961;
+  --synergy-green: #A4C639;
+  --bg: #2C2A26;
+  --card-bg: #F5F0E8;
+  --text-dark: #2C2A26;
+  --text-light: #F5F0E8;
+
+  /* department colors */
+  --dept-caffeine: #8B6914;
+  --dept-operations: #5A6B7A;
+  --dept-engineering: #4A7A5A;
+  --dept-sales: #7A4A4A;
+  --dept-people-ops: #6B5A7A;
+  --dept-creative: #7A6B4A;
+  --dept-finance: #3D5A6B;
+
+  /* rarity border colors */
+  --rarity-intern: #9E9E9E;
+  --rarity-associate: #6B8E9E;
+  --rarity-senior: #7E57C2;
+  --rarity-director: #C9A961;
+  --rarity-vp: #FF8F00;
+  --rarity-c-suite: #2C2A26;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-light);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}

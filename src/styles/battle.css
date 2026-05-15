@@ -1,0 +1,772 @@
+/* ── Main Menu ────────────────────────────────────────────── */
+
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  gap: 0;
+}
+
+/* Hero section — cap height so buttons stay visible on load */
+.main-menu__hero {
+  position: relative;
+  width: 100%;
+  max-height: 55vh;
+  overflow: hidden;
+}
+
+.main-menu__cover {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  max-height: 55vh;
+}
+
+/* Seamless fade from art into the page background */
+.main-menu__hero-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(44, 42, 38, 0), rgba(44, 42, 38, 1));
+  pointer-events: none;
+}
+
+/* Buttons below the hero */
+.main-menu__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 380px;
+  padding: 8px 20px 32px;
+}
+
+.main-menu__btn {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+  background: rgba(245, 240, 232, 0.06);
+  border: 2px solid rgba(139, 131, 120, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--text-light);
+  font-family: inherit;
+}
+
+.main-menu__btn:hover {
+  background: rgba(201, 169, 97, 0.12);
+  border-color: var(--gold);
+  transform: translateX(6px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.main-menu__btn-label {
+  font-family: 'Roboto Slab', serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.main-menu__btn-desc {
+  font-size: 12px;
+  color: var(--warm-gray);
+  margin-top: 4px;
+}
+
+.main-menu__footer {
+  color: var(--warm-gray);
+  font-size: 11px;
+  opacity: 0.4;
+  padding-bottom: 24px;
+}
+
+/* ── Battle Layout ────────────────────────────────────────── */
+
+.battle {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 16px;
+  gap: 8px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.battle__side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.battle__side--opp {
+  order: 1;
+}
+
+.battle__side--player {
+  order: 3;
+}
+
+.battle__divider {
+  order: 2;
+  text-align: center;
+  padding: 6px 0;
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  color: var(--warm-gray);
+  border-top: 1px solid rgba(139, 131, 120, 0.3);
+  border-bottom: 1px solid rgba(139, 131, 120, 0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.battle__active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.battle__bench {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  min-height: 40px;
+}
+
+.battle__empty-slot {
+  width: 200px;
+  height: 100px;
+  border: 2px dashed var(--warm-gray);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--warm-gray);
+  font-style: italic;
+  opacity: 0.5;
+}
+
+/* ── Field card overlays ──────────────────────────────────── */
+
+.field-card__hp {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 5;
+}
+
+.field-card__hp-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1px;
+}
+
+.field-card__hp-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.field-card__hp-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  color: var(--text-light);
+  text-align: center;
+  display: block;
+}
+
+.field-card__statuses {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 5;
+}
+
+.field-card__status {
+  font-size: 8px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.field-card__status--meeting { background: #6B5A7A; }
+.field-card__status--caffeinated { background: #8B6914; }
+.field-card__status--burnout { background: #7A4A4A; }
+.field-card__status--motivated { background: #4A7A5A; }
+.field-card__status--protected { background: #3D6B7A; }
+
+.card--opponent {
+  pointer-events: none;
+}
+
+.card--unplayable {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+
+.battle__btn {
+  padding: 8px 20px;
+  border: 2px solid var(--warm-gray);
+  background: rgba(245, 240, 232, 0.08);
+  color: var(--text-light);
+  font-family: 'Roboto Slab', serif;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.battle__btn:hover:not(:disabled) {
+  background: rgba(201, 169, 97, 0.2);
+  border-color: var(--gold);
+}
+
+.battle__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.battle__btn--attack {
+  background: rgba(122, 74, 74, 0.3);
+  border-color: #C0392B;
+}
+
+.battle__btn--attack:hover {
+  background: rgba(192, 57, 43, 0.4);
+  border-color: #E74C3C;
+}
+
+.battle__btn--ability {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-color: var(--teal);
+}
+
+.battle__btn--ability:hover:not(:disabled) {
+  border-color: var(--synergy-green);
+  background: rgba(164, 198, 57, 0.15);
+}
+
+.battle__btn--end-turn {
+  background: rgba(61, 107, 122, 0.3);
+  border-color: var(--teal);
+}
+
+/* ── Actions bar ──────────────────────────────────────────── */
+
+.battle__actions {
+  order: 4;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.battle__game-over {
+  font-family: 'Roboto Slab', serif;
+  font-size: 28px;
+  color: var(--gold);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.battle__waiting {
+  color: var(--warm-gray);
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── Hand ─────────────────────────────────────────────────── */
+
+.hand {
+  order: 5;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+
+/* ── Battle log ───────────────────────────────────────────── */
+
+.battle__log {
+  order: 6;
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  border: 1px solid rgba(139, 131, 120, 0.2);
+}
+
+.battle__log-entry {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  color: var(--warm-gray);
+  padding: 1px 0;
+  border-bottom: 1px solid rgba(139, 131, 120, 0.1);
+}
+
+.battle__log-entry:last-child {
+  color: var(--text-light);
+  border-bottom: none;
+}
+
+/* ── HUD ──────────────────────────────────────────────────── */
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  border: 1px solid rgba(139, 131, 120, 0.2);
+}
+
+.hud__label {
+  font-family: 'Roboto Slab', serif;
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 70px;
+}
+
+.hud__stats {
+  display: flex;
+  gap: 16px;
+}
+
+.hud__stat {
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
+}
+
+.hud__icon {
+  margin-right: 2px;
+}
+
+.hud__energy { color: var(--gold); }
+.hud__deck { color: var(--teal); }
+.hud__hand-count { color: var(--warm-gray); }
+
+/* ── Deck Builder ─────────────────────────────────────────── */
+
+.deck-builder {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.deck-builder__header {
+  margin-bottom: 8px;
+}
+
+.deck-builder__title {
+  font-family: 'Roboto Slab', serif;
+  font-size: 28px;
+  color: var(--gold);
+}
+
+.deck-builder__info {
+  color: var(--warm-gray);
+  font-size: 13px;
+}
+
+.deck-builder__counter {
+  font-family: 'Courier Prime', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.deck-builder__panels {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.deck-builder__roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-content: flex-start;
+}
+
+.deck-builder__card-slot {
+  position: relative;
+}
+
+.deck-builder__count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.deck-builder__deck {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid rgba(139, 131, 120, 0.2);
+  align-self: flex-start;
+  position: sticky;
+  top: 16px;
+}
+
+.deck-builder__deck-title {
+  font-family: 'Roboto Slab', serif;
+  font-size: 16px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.deck-builder__deck-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deck-builder__deck-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(245, 240, 232, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 13px;
+}
+
+.deck-builder__deck-row:hover {
+  background: rgba(192, 57, 43, 0.2);
+}
+
+.deck-builder__deck-name {
+  color: var(--text-light);
+}
+
+.deck-builder__deck-qty {
+  font-family: 'Courier Prime', monospace;
+  color: var(--warm-gray);
+}
+
+.deck-builder__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ── Phase 5: Animations & Juice ─────────────────────────── */
+
+/* Card entering the field — slide up + fade in */
+@keyframes card-enter {
+  0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.card--entering {
+  animation: card-enter 0.35s ease-out;
+}
+
+/* Attack lunge — card lunges forward then snaps back */
+@keyframes attack-lunge {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-20px) scale(1.05); }
+  50% { transform: translateY(-30px) scale(1.08); }
+  70% { transform: translateY(-10px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.card--attacking {
+  animation: attack-lunge 0.4s ease-in-out;
+}
+
+/* Opponent gets hit — flash red and shake */
+@keyframes card-hit {
+  0% { filter: brightness(1); transform: translateX(0); }
+  15% { filter: brightness(2) sepia(1) hue-rotate(-30deg); transform: translateX(-6px); }
+  30% { filter: brightness(1.5) sepia(0.5); transform: translateX(6px); }
+  50% { filter: brightness(1.2); transform: translateX(-4px); }
+  70% { transform: translateX(2px); }
+  100% { filter: brightness(1); transform: translateX(0); }
+}
+
+.card--hit {
+  animation: card-hit 0.4s ease-out;
+}
+
+/* KO — fade out + tilt + shrink */
+@keyframes card-ko {
+  0% { opacity: 1; transform: rotate(0deg) scale(1); }
+  40% { opacity: 0.7; transform: rotate(-8deg) scale(0.95); }
+  100% { opacity: 0; transform: rotate(-15deg) scale(0.7) translateY(20px); }
+}
+
+.card--ko {
+  animation: card-ko 0.6s ease-in forwards;
+  pointer-events: none;
+}
+
+/* Floating damage number */
+@keyframes float-damage {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  60% { opacity: 1; transform: translateY(-30px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-50px) scale(0.8); }
+}
+
+.damage-number {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Roboto Slab', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #E74C3C;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  animation: float-damage 0.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.damage-number--heal {
+  color: var(--synergy-green);
+}
+
+.damage-number--super {
+  color: #FF8F00;
+  font-size: 34px;
+}
+
+/* Energy gain shimmer on HUD */
+@keyframes energy-shimmer {
+  0% { box-shadow: 0 0 0 rgba(201, 169, 97, 0); }
+  40% { box-shadow: 0 0 16px rgba(201, 169, 97, 0.6); }
+  100% { box-shadow: 0 0 0 rgba(201, 169, 97, 0); }
+}
+
+.hud--energy-gain {
+  animation: energy-shimmer 0.6s ease-out;
+}
+
+/* Card hand hover lift */
+.hand .card {
+  transition: transform 0.15s, box-shadow 0.15s, margin-top 0.15s;
+}
+
+.hand .card:not(.card--unplayable):hover {
+  transform: translateY(-12px) scale(1.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Bench card swap hint glow */
+.battle__side--player .battle__bench .card {
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.battle__side--player .battle__bench .card:hover {
+  box-shadow: 0 0 12px rgba(164, 198, 57, 0.4);
+  cursor: pointer;
+}
+
+/* ── Tutorial Overlay ─────────────────────────────────────── */
+
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.tutorial-spotlight {
+  position: fixed;
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  z-index: 101;
+  border: 2px solid var(--gold);
+  animation: spotlight-pulse 2s ease-in-out infinite;
+}
+
+@keyframes spotlight-pulse {
+  0%, 100% { border-color: var(--gold); }
+  50% { border-color: var(--synergy-green); }
+}
+
+.tutorial-tooltip {
+  position: fixed;
+  width: 300px;
+  background: rgba(44, 42, 38, 0.96);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 16px;
+  z-index: 102;
+  pointer-events: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.tutorial-tooltip__message {
+  color: var(--text-light);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.tutorial-tooltip__btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: var(--gold);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 6px;
+  font-family: 'Roboto Slab', serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tutorial-tooltip__btn:hover {
+  background: #D4B56A;
+}
+
+.tutorial-tooltip__hint {
+  color: var(--warm-gray);
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  padding-top: 4px;
+  border-top: 1px solid rgba(139, 131, 120, 0.2);
+}
+
+/* ── Mobile Responsive ────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Main menu */
+  .main-menu__hero { max-height: 40vh; }
+  .main-menu__cover { max-height: 40vh; }
+  .main-menu__buttons { width: 100%; padding: 8px 16px 24px; }
+  .main-menu__btn { padding: 12px 16px; }
+  .main-menu__btn-label { font-size: 16px; }
+
+  /* Battle layout */
+  .battle { padding: 8px; gap: 4px; }
+
+  /* Cards scale down */
+  .card--active { width: 150px; height: 230px; font-size: 9px; }
+  .card--bench { width: 75px; height: 112px; font-size: 6.5px; }
+  .card--hand { width: 100px; height: 150px; font-size: 7.5px; }
+  .card--grid { width: 150px; height: 230px; font-size: 9px; }
+
+  .battle__bench { gap: 4px; }
+  .battle__empty-slot { width: 140px; height: 70px; }
+
+  /* HUD compact */
+  .hud { padding: 4px 10px; gap: 8px; }
+  .hud__label { font-size: 12px; min-width: 50px; }
+  .hud__stat { font-size: 12px; }
+  .hud__stats { gap: 10px; }
+
+  /* Hand */
+  .hand { gap: 4px; padding: 4px 0; }
+
+  /* Buttons */
+  .battle__btn { padding: 6px 14px; font-size: 12px; }
+  .battle__btn--ability { font-size: 10px; padding: 4px 8px; }
+  .battle__actions { gap: 8px; padding: 4px 0; }
+
+  /* Log */
+  .battle__log { max-height: 80px; padding: 6px 8px; }
+  .battle__log-entry { font-size: 10px; }
+
+  /* Divider */
+  .battle__divider { font-size: 11px; padding: 4px 0; }
+
+  /* Game over */
+  .battle__game-over { font-size: 22px; }
+
+  /* Test cards / gallery */
+  .test-cards { padding: 16px; }
+  .test-cards__title { font-size: 22px; }
+  .test-cards__grid { gap: 10px; }
+
+  /* Deck builder */
+  .deck-builder { padding: 12px; }
+  .deck-builder__panels { grid-template-columns: 1fr; }
+  .deck-builder__deck { position: static; }
+  .deck-builder__title { font-size: 22px; }
+
+  /* Tutorial tooltip */
+  .tutorial-tooltip { width: 260px; padding: 12px; }
+  .tutorial-tooltip__message { font-size: 13px; }
+}
+
+@media (max-width: 430px) {
+  /* iPhone-sized screens */
+  .main-menu__hero { max-height: 35vh; }
+  .main-menu__cover { max-height: 35vh; }
+
+  .card--active { width: 120px; height: 184px; font-size: 8px; }
+  .card--bench { width: 65px; height: 97px; font-size: 5.5px; }
+  .card--hand { width: 80px; height: 120px; font-size: 6.5px; }
+  .card--grid { width: 105px; height: 160px; font-size: 7px; }
+
+  .hand { gap: 3px; }
+
+  .battle__btn { padding: 5px 10px; font-size: 11px; }
+  .battle__btn--attack { padding: 6px 16px; }
+  .battle__btn--ability { font-size: 9px; padding: 3px 6px; }
+
+  .hud { flex-wrap: wrap; gap: 4px; padding: 4px 8px; }
+  .hud__label { font-size: 11px; min-width: auto; }
+  .hud__stat { font-size: 11px; }
+
+  .battle__game-over { font-size: 18px; }
+  .battle__log { max-height: 60px; }
+
+  .tutorial-tooltip { width: 220px; padding: 10px; }
+  .tutorial-tooltip__message { font-size: 12px; line-height: 1.4; }
+
+  /* Bench cards hide abilities and flavor on mobile */
+  .card--bench .card__footer { display: none; }
+  .card--hand .card__abilities { display: none; }
+  .card--hand .card__footer { display: none; }
+}
