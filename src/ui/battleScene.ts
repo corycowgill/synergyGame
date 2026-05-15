@@ -89,8 +89,14 @@ function renderBattle(state: BattleState): void {
 
   // ── Divider ──
   const divider = document.createElement('div');
-  divider.className = 'battle__divider';
-  divider.textContent = `Turn ${state.turn} — ${state.currentTurn === 'player' ? 'Your' : "Opponent's"} Turn`;
+  const isPlayerTurn = state.currentTurn === 'player';
+  divider.className = `battle__divider ${isPlayerTurn ? '' : 'battle__divider--opp'}`.trim();
+  divider.innerHTML = `
+    <span class="battle__divider-badge">
+      <span class="battle__divider-dot" aria-hidden="true"></span>
+      <span>Turn ${state.turn} &middot; ${isPlayerTurn ? 'Your Move' : "Opponent's Move"}</span>
+    </span>
+  `;
   wrapper.appendChild(divider);
 
   // ── Player side ──
