@@ -213,36 +213,161 @@
 
 /* ── Battle Layout ────────────────────────────────────────── */
 
+/* ── Play Mat — the corporate "boardroom table" ──────────── */
+
 .battle {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 16px;
-  gap: 8px;
-  max-width: 1000px;
+  padding: 22px 26px 18px;
+  gap: 10px;
+  max-width: 1040px;
   margin: 0 auto;
+  position: relative;
+  /* Felt-board surface — deep desk-green tinted with warm undertones */
+  background:
+    /* Soft inner vignette to focus center */
+    radial-gradient(ellipse 80% 60% at 50% 50%,
+      rgba(255, 230, 180, 0.06) 0%,
+      transparent 70%
+    ),
+    /* Subtle felt noise via micro-gradient checker */
+    repeating-linear-gradient(45deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    ),
+    /* Base felt color — deep teal-green like a casino/office desk pad */
+    linear-gradient(160deg,
+      #1F2A2E 0%,
+      #1C2528 30%,
+      #1A2123 50%,
+      #1C2528 70%,
+      #1F2A2E 100%
+    );
+  border-radius: 22px;
+  border: 2px solid rgba(201, 169, 97, 0.55);
+  box-shadow:
+    /* Leather edge — dark ring, then a bright gold pinstripe inside */
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 2px rgba(255, 220, 140, 0.18),
+    inset 0 0 0 5px rgba(0, 0, 0, 0.4),
+    inset 0 0 90px rgba(0, 0, 0, 0.5),
+    /* Outer halo + lift */
+    0 0 32px rgba(201, 169, 97, 0.18),
+    0 22px 70px rgba(0, 0, 0, 0.6),
+    0 4px 0 rgba(0, 0, 0, 0.35);
 }
+
+/* Central watermark emblem — the "company seal" in the middle of the table */
+.battle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.18;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23C9A961' stroke-width='1.5'><circle cx='100' cy='100' r='92'/><circle cx='100' cy='100' r='74' stroke-dasharray='2 4'/><circle cx='100' cy='100' r='40'/><path d='M70 90h60v30h-60z'/><path d='M88 90v-8a12 12 0 0 1 24 0v8'/><path d='M70 105h60'/><text x='100' y='160' text-anchor='middle' font-family='Roboto Slab, serif' font-size='10' fill='%23C9A961' stroke='none' letter-spacing='3'>PERFORMANCE REVIEW</text><text x='100' y='52' text-anchor='middle' font-family='Inter, sans-serif' font-size='6' fill='%23C9A961' stroke='none' letter-spacing='4'>Q4 &#9670; FY</text></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* Inner gold frame with corner cut-outs — like an MTG card border */
+.battle::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(to right,
+      rgba(201, 169, 97, 0.65),
+      transparent 24px,
+      transparent calc(100% - 24px),
+      rgba(201, 169, 97, 0.65)
+    ) top/100% 1px no-repeat,
+    linear-gradient(to right,
+      rgba(201, 169, 97, 0.65),
+      transparent 24px,
+      transparent calc(100% - 24px),
+      rgba(201, 169, 97, 0.65)
+    ) bottom/100% 1px no-repeat,
+    linear-gradient(to bottom,
+      rgba(201, 169, 97, 0.65),
+      transparent 24px,
+      transparent calc(100% - 24px),
+      rgba(201, 169, 97, 0.65)
+    ) left/1px 100% no-repeat,
+    linear-gradient(to bottom,
+      rgba(201, 169, 97, 0.65),
+      transparent 24px,
+      transparent calc(100% - 24px),
+      rgba(201, 169, 97, 0.65)
+    ) right/1px 100% no-repeat;
+}
+
+/* All children should sit above the mat decorations */
+.battle > * { position: relative; z-index: 1; }
 
 .battle__side {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  position: relative;
+}
+
+/* Tiny zone label badge on the upper corner of each side */
+.battle__side::before {
+  content: attr(data-zone);
+  position: absolute;
+  top: -8px;
+  left: 16px;
+  padding: 2px 9px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(201, 169, 97, 0.8);
+  background: #1A2123;
+  border-radius: 6px;
+  border: 1px solid rgba(201, 169, 97, 0.25);
+  z-index: 2;
 }
 
 .battle__side--opp {
   order: 1;
+  border-top: 1px solid rgba(192, 57, 43, 0.18);
+}
+
+.battle__side--opp::before {
+  color: rgba(231, 76, 60, 0.85);
+  border-color: rgba(192, 57, 43, 0.3);
 }
 
 .battle__side--player {
   order: 3;
+  border-bottom: 1px solid rgba(201, 169, 97, 0.18);
 }
 
 .battle__divider {
   order: 2;
   position: relative;
   text-align: center;
-  padding: 10px 0;
+  padding: 6px 0;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -252,50 +377,85 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 18px;
 }
 
+/* Twin gold rails — like the centerline of a Pokemon mat */
 .battle__divider::before,
 .battle__divider::after {
   content: '';
   flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(201, 169, 97, 0.35) 50%,
-    transparent
-  );
-  max-width: 220px;
+  height: 2px;
+  background:
+    linear-gradient(90deg,
+      transparent,
+      rgba(201, 169, 97, 0.45) 25%,
+      rgba(201, 169, 97, 0.5) 50%,
+      rgba(201, 169, 97, 0.45) 75%,
+      transparent
+    );
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 2px;
+  max-width: 260px;
 }
 
 .battle__divider-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
+  gap: 10px;
+  padding: 8px 18px;
   border-radius: 999px;
-  background: linear-gradient(135deg,
-    rgba(30, 28, 24, 0.85),
-    rgba(20, 18, 15, 0.85)
-  );
-  border: 1px solid rgba(201, 169, 97, 0.35);
+  background:
+    radial-gradient(ellipse at top,
+      rgba(201, 169, 97, 0.18) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg,
+      #2A2520 0%,
+      #1A1612 100%
+    );
+  border: 1px solid rgba(201, 169, 97, 0.45);
   box-shadow:
-    0 4px 18px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 6px 22px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(201, 169, 97, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+  position: relative;
 }
 
+/* Decorative diamond accents on either side of the badge */
+.battle__divider-badge::before,
+.battle__divider-badge::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 6px rgba(201, 169, 97, 0.5);
+}
+
+.battle__divider-badge::before { left: -14px; }
+.battle__divider-badge::after { right: -14px; }
+
 .battle__divider-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--synergy-green);
-  box-shadow: 0 0 8px rgba(164, 198, 57, 0.7);
+  box-shadow:
+    0 0 10px rgba(164, 198, 57, 0.8),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
   animation: pulse 1.4s ease-in-out infinite;
 }
 
 .battle__divider--opp .battle__divider-dot {
-  background: #C0392B;
-  box-shadow: 0 0 8px rgba(192, 57, 43, 0.7);
+  background: #E74C3C;
+  box-shadow:
+    0 0 10px rgba(231, 76, 60, 0.8),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .battle__active {
@@ -741,6 +901,19 @@
   -webkit-backdrop-filter: blur(8px);
   position: relative;
   overflow: hidden;
+  animation: hud-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hud--player { animation-name: hud-in-bottom; }
+.hud--opponent { animation-name: hud-in-top; }
+
+@keyframes hud-in-top {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hud-in-bottom {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Accent stripe along the top edge — team color */

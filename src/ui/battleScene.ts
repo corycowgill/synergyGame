@@ -66,6 +66,7 @@ function renderBattle(state: BattleState): void {
   // ── Opponent side ──
   const oppSection = document.createElement('div');
   oppSection.className = 'battle__side battle__side--opp';
+  oppSection.dataset.zone = 'Rival Department';
   oppSection.appendChild(renderHud(state.opponent, 'Opponent'));
 
   const oppBench = document.createElement('div');
@@ -102,6 +103,7 @@ function renderBattle(state: BattleState): void {
   // ── Player side ──
   const playerSection = document.createElement('div');
   playerSection.className = 'battle__side battle__side--player';
+  playerSection.dataset.zone = 'Your Team';
 
   const playerActive = document.createElement('div');
   playerActive.className = 'battle__active';
