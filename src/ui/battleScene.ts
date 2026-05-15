@@ -63,6 +63,17 @@ function renderBattle(state: BattleState): void {
   const wrapper = document.createElement('div');
   wrapper.className = 'battle';
 
+  // Atmospheric layers — stadium light sweep and floating motes
+  const lights = document.createElement('div');
+  lights.className = 'battle__lights';
+  lights.setAttribute('aria-hidden', 'true');
+  wrapper.appendChild(lights);
+
+  const motes = document.createElement('div');
+  motes.className = 'battle__motes';
+  motes.setAttribute('aria-hidden', 'true');
+  wrapper.appendChild(motes);
+
   // ── Opponent side ──
   const oppSection = document.createElement('div');
   oppSection.className = 'battle__side battle__side--opp';

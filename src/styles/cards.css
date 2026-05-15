@@ -42,6 +42,49 @@
   filter: brightness(1.04);
 }
 
+/* Holographic foil sweep — appears on hover, drifts across the card */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 215, 200, 0.0) 40%,
+    rgba(255, 240, 200, 0.18) 48%,
+    rgba(180, 220, 255, 0.22) 50%,
+    rgba(220, 180, 255, 0.18) 52%,
+    rgba(255, 240, 200, 0.0) 60%,
+    transparent 70%,
+    transparent 100%
+  );
+  background-size: 250% 250%;
+  background-position: -100% -100%;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  mix-blend-mode: screen;
+}
+
+.card:hover::before {
+  opacity: 1;
+  animation: holo-sweep 2.5s ease-in-out infinite;
+}
+
+@keyframes holo-sweep {
+  0%   { background-position: -100% -100%; }
+  100% { background-position: 200% 200%; }
+}
+
+/* Premium rarities — always-on shimmer */
+.card--vp::before,
+.card--c-suite::before {
+  opacity: 0.6;
+  animation: holo-sweep 6s linear infinite;
+}
+
 /* ── Size variants ─────────────────────────────────────── */
 
 .card--hand {
