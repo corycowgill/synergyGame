@@ -89,117 +89,327 @@
 /* ── Menu panel — dark glass with glow border ─────────────── */
 
 .main-menu__panel {
-  width: 420px;
+  width: 460px;
   max-width: 92vw;
-  border-radius: 14px;
-  border: 1px solid rgba(201, 169, 97, 0.25);
+  border-radius: 18px;
+  border: 1px solid rgba(201, 169, 97, 0.35);
   background:
     linear-gradient(135deg,
-      rgba(20, 18, 15, 0.88) 0%,
-      rgba(30, 28, 24, 0.92) 50%,
-      rgba(20, 18, 15, 0.88) 100%
+      rgba(20, 18, 15, 0.92) 0%,
+      rgba(32, 30, 26, 0.94) 50%,
+      rgba(20, 18, 15, 0.92) 100%
     );
   box-shadow:
-    0 0 1px rgba(201, 169, 97, 0.4),
-    0 0 20px rgba(201, 169, 97, 0.08),
-    0 8px 40px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 6px;
+    0 0 0 1px rgba(201, 169, 97, 0.15),
+    0 0 32px rgba(201, 169, 97, 0.12),
+    0 16px 56px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 10px;
+  position: relative;
+}
+
+/* Top edge gold highlight on the panel */
+.main-menu__panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16%;
+  right: 16%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 230, 150, 0.5),
+    transparent
+  );
+  border-radius: 1px;
 }
 
 .main-menu__panel-inner {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
-/* ── Buttons — game UI style ──────────────────────────────── */
+/* ── Main Menu Buttons — premium feature cards ────────────── */
 
 .main-menu__btn {
-  display: flex;
+  --accent: #C9A961;
+  --accent-hot: #FFE4A0;
+  --accent-shadow: rgba(201, 169, 97, 0.5);
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
-  background: linear-gradient(135deg,
-    rgba(245, 240, 232, 0.04) 0%,
-    rgba(245, 240, 232, 0.02) 100%
-  );
-  border: 1px solid rgba(139, 131, 120, 0.15);
-  border-radius: 10px;
+  gap: 16px;
+  padding: 16px 18px 16px 22px;
+  background:
+    linear-gradient(135deg,
+      rgba(245, 240, 232, 0.05) 0%,
+      rgba(245, 240, 232, 0.02) 100%
+    );
+  border: 1px solid rgba(139, 131, 120, 0.18);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.25s,
+    border-color 0.25s,
+    box-shadow 0.3s ease;
   text-align: left;
   color: var(--text-light);
   font-family: inherit;
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Subtle inner highlight along top edge */
+/* Left accent rail — colored ribbon that lights up on hover */
 .main-menu__btn::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg,
+  top: 10%;
+  bottom: 10%;
+  left: 0;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg,
     transparent,
-    rgba(255, 255, 255, 0.08),
+    var(--accent) 30%,
+    var(--accent-hot) 50%,
+    var(--accent) 70%,
     transparent
   );
+  opacity: 0.55;
+  transition: opacity 0.25s, box-shadow 0.3s, width 0.25s;
+}
+
+/* Holo sweep that ignites across the button on hover */
+.main-menu__btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 255, 255, 0.12) 48%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 52%,
+    transparent 62%,
+    transparent 100%
+  );
+  background-size: 250% 250%;
+  background-position: -100% -100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 0;
+  mix-blend-mode: screen;
 }
 
 .main-menu__btn:hover {
   background: linear-gradient(135deg,
-    rgba(201, 169, 97, 0.12) 0%,
-    rgba(201, 169, 97, 0.06) 100%
+    color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 100%
   );
-  border-color: rgba(201, 169, 97, 0.4);
-  transform: translateY(-1px);
+  border-color: var(--accent);
+  transform: translateY(-3px) translateX(2px);
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    0 0 12px rgba(201, 169, 97, 0.1);
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 28px var(--accent-shadow),
+    0 0 60px color-mix(in srgb, var(--accent) 25%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.main-menu__btn:hover::before {
+  width: 6px;
+  opacity: 1;
+  box-shadow:
+    0 0 12px var(--accent),
+    0 0 24px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.main-menu__btn:hover::after {
+  opacity: 1;
+  animation: menu-btn-shine 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes menu-btn-shine {
+  0%   { background-position: -100% -100%; }
+  100% { background-position: 200% 200%; }
 }
 
 .main-menu__btn:active {
-  transform: translateY(1px);
-  box-shadow: none;
-  background: rgba(201, 169, 97, 0.08);
+  transform: translateY(0) translateX(2px);
+  transition-duration: 0.08s;
 }
 
+/* ── Accent variants ─────────────────────────────────────── */
+
+.main-menu__btn--green {
+  --accent: #A4C639;
+  --accent-hot: #D8F082;
+  --accent-shadow: rgba(164, 198, 57, 0.4);
+}
+
+.main-menu__btn--red {
+  --accent: #E74C3C;
+  --accent-hot: #FFB5A5;
+  --accent-shadow: rgba(231, 76, 60, 0.45);
+}
+
+.main-menu__btn--teal {
+  --accent: #4FA0BC;
+  --accent-hot: #B5E4F0;
+  --accent-shadow: rgba(79, 160, 188, 0.45);
+}
+
+.main-menu__btn--gold {
+  --accent: #C9A961;
+  --accent-hot: #FFE4A0;
+  --accent-shadow: rgba(201, 169, 97, 0.5);
+}
+
+/* ── Icon — accent-colored aura, pulses on hover ─────────── */
+
 .main-menu__btn-icon {
-  font-size: 22px;
-  width: 36px;
-  height: 36px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(201, 169, 97, 0.1);
-  border: 1px solid rgba(201, 169, 97, 0.2);
-  border-radius: 8px;
   flex-shrink: 0;
+  position: relative;
+  background:
+    radial-gradient(circle at 30% 25%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent) 60%,
+      transparent 100%
+    ),
+    linear-gradient(135deg,
+      rgba(20, 18, 15, 0.6),
+      rgba(10, 9, 7, 0.5)
+    );
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    0 0 12px color-mix(in srgb, var(--accent) 25%, transparent);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s,
+              border-color 0.25s;
+  z-index: 1;
 }
+
+.main-menu__btn-icon-glyph {
+  font-size: 24px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6))
+          drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 50%, transparent));
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.main-menu__btn:hover .main-menu__btn-icon {
+  transform: scale(1.08) rotate(-3deg);
+  border-color: var(--accent-hot);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    0 6px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px var(--accent-shadow),
+    0 0 40px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.main-menu__btn:hover .main-menu__btn-icon-glyph {
+  transform: scale(1.12) rotate(8deg);
+}
+
+/* ── Text block ──────────────────────────────────────────── */
 
 .main-menu__btn-text {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  z-index: 1;
+  position: relative;
 }
 
 .main-menu__btn-label {
   font-family: 'Roboto Slab', serif;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 800;
   color: var(--text-light);
-  line-height: 1.2;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 0.25s, text-shadow 0.25s;
+}
+
+.main-menu__btn:hover .main-menu__btn-label {
+  color: var(--accent-hot);
+  text-shadow: 0 0 16px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 .main-menu__btn-desc {
-  font-size: 11px;
-  color: rgba(139, 131, 120, 0.8);
-  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(180, 172, 160, 0.85);
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
+
+/* Recommended / featured badge */
+.main-menu__btn-badge {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hot));
+  color: #1A1816;
+  text-shadow: none;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  animation: badge-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { transform: translateY(0) scale(1); filter: brightness(1); }
+  50%      { transform: translateY(-1px) scale(1.04); filter: brightness(1.15); }
+}
+
+/* ── Right chevron — bounces on hover ───────────────────── */
+
+.main-menu__btn-arrow {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(139, 131, 120, 0.5);
+  transition: color 0.25s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+  width: 24px;
+  text-align: center;
+}
+
+.main-menu__btn:hover .main-menu__btn-arrow {
+  color: var(--accent-hot);
+  transform: translateX(6px);
+  animation: arrow-nudge 0.9s ease-in-out infinite;
+}
+
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateX(6px); }
+  50%      { transform: translateX(10px); }
 }
 
 /* ── Footer ───────────────────────────────────────────────── */
