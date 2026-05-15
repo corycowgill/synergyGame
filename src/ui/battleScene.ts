@@ -60,6 +60,12 @@ function renderBattle(state: BattleState): void {
   if (!battleRoot) return;
   battleRoot.innerHTML = '';
 
+  // Premium brand header sits ABOVE the play mat
+  const brand = document.createElement('div');
+  brand.className = 'battle__brand';
+  brand.innerHTML = `<span class="battle__brand-mark">Performance Review &middot; Q4</span>`;
+  battleRoot.appendChild(brand);
+
   const wrapper = document.createElement('div');
   wrapper.className = 'battle';
 

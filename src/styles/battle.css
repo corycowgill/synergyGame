@@ -215,6 +215,55 @@
 
 /* ── Play Mat — the corporate "boardroom table" ──────────── */
 
+/* Premium brand header above the play mat */
+.battle__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 14px 0 10px;
+  max-width: 1040px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.battle__brand::before,
+.battle__brand::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.55), transparent);
+  max-width: 320px;
+}
+
+.battle__brand-mark {
+  font-family: 'Roboto Slab', serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #FFEFB8 0%, #D4A830 45%, #8C6A0E 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.8))
+    drop-shadow(0 0 12px rgba(201, 169, 97, 0.4));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.battle__brand-mark::before,
+.battle__brand-mark::after {
+  content: '\2756';
+  font-size: 10px;
+  color: rgba(201, 169, 97, 0.7);
+  -webkit-text-fill-color: rgba(201, 169, 97, 0.7);
+  filter: none;
+  letter-spacing: 0;
+}
+
 .battle {
   display: flex;
   flex-direction: column;
@@ -941,24 +990,68 @@
 }
 
 .battle__btn--end-turn {
-  background: linear-gradient(135deg,
-    rgba(61, 107, 122, 0.4),
-    rgba(40, 70, 80, 0.25)
+  background: linear-gradient(180deg,
+    #4FA0BC 0%,
+    #2A6B82 50%,
+    #173E4D 100%
   );
-  border-color: rgba(61, 107, 122, 0.7);
-  color: #DDEEF2;
+  border: 1px solid #7FCAE0;
+  color: #EFF8FB;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  padding: 12px 28px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 18px rgba(92, 143, 163, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.battle__btn--end-turn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(110deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  animation: attack-shimmer 4s ease-in-out infinite;
+  animation-delay: -2s;
+  pointer-events: none;
+}
+
+.battle__btn--end-turn::after {
+  content: '\27A4';
+  margin-left: 10px;
+  display: inline-block;
+  font-size: 13px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  opacity: 0.9;
 }
 
 .battle__btn--end-turn:hover:not(:disabled) {
-  background: linear-gradient(135deg,
-    rgba(80, 130, 145, 0.5),
-    rgba(61, 107, 122, 0.35)
+  background: linear-gradient(180deg,
+    #6EB8D2 0%,
+    #3987A1 50%,
+    #1F5063 100%
   );
-  border-color: #5C8FA3;
+  border-color: #B5E4F0;
+  transform: translateY(-2px);
   box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(92, 143, 163, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 8px 22px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(92, 180, 210, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 /* ── Actions bar ──────────────────────────────────────────── */
@@ -1543,8 +1636,10 @@
 }
 
 .hand .card:not(.card--unplayable):hover {
-  transform: translateY(-12px) scale(1.08);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  transform: translateY(-18px) scale(1.12) perspective(900px) rotateX(8deg);
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.6),
+    0 0 28px rgba(201, 169, 97, 0.22);
   z-index: 10;
 }
 

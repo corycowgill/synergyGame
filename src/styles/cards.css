@@ -6,8 +6,8 @@
   overflow: hidden;
   color: var(--text-dark);
   cursor: pointer;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.22s ease,
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s ease,
               filter 0.22s ease;
   display: grid;
   /* Fixed row layout like a real TCG card */
@@ -15,6 +15,8 @@
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.35),
     0 1px 0 rgba(255, 255, 255, 0.06);
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 /* Subtle gloss highlight along the top edge */
@@ -35,12 +37,14 @@
 }
 
 .card:hover {
-  transform: translateY(-6px) scale(1.02);
+  transform: translateY(-8px) scale(1.03) perspective(800px) rotateX(4deg);
   box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
-  filter: brightness(1.04);
+    0 18px 44px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(201, 169, 97, 0.2),
+    0 0 28px rgba(201, 169, 97, 0.18);
+  filter: brightness(1.06);
 }
+
 
 /* Holographic foil sweep — appears on hover, drifts across the card */
 .card::before {
