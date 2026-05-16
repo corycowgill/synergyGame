@@ -20,6 +20,15 @@
   object-fit: cover;
   object-position: center 20%;
   display: block;
+  /* Slow Ken-Burns drift — cinematic intro vibes */
+  animation: ken-burns 28s ease-in-out infinite alternate;
+  transform-origin: center 30%;
+}
+
+@keyframes ken-burns {
+  0%   { transform: scale(1.04) translate(0, 0); filter: saturate(1) brightness(0.95); }
+  50%  { transform: scale(1.08) translate(-1.5%, 0.5%); filter: saturate(1.08) brightness(1); }
+  100% { transform: scale(1.12) translate(1.5%, -0.5%); filter: saturate(1.05) brightness(0.92); }
 }
 
 /* Vignette + darken bottom for readability */
@@ -595,13 +604,350 @@
   50%      { transform: translateX(10px); }
 }
 
+/* ── Live stats marquee ───────────────────────────────────── */
+
+.main-menu__ticker {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  background: linear-gradient(180deg,
+    rgba(10, 8, 6, 0) 0%,
+    rgba(10, 8, 6, 0.85) 35%,
+    rgba(10, 8, 6, 0.95) 100%
+  );
+  padding: 10px 0 8px;
+  border-top: 1px solid rgba(201, 169, 97, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 150, 0.18),
+    0 -8px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: ticker-in 0.7s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes ticker-in {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.main-menu__ticker-track {
+  display: inline-flex;
+  gap: 48px;
+  white-space: nowrap;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.85);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  animation: ticker-scroll 38s linear infinite;
+  padding-left: 100%;
+  align-items: center;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.main-menu__ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main-menu__ticker-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--synergy-green);
+  box-shadow:
+    0 0 8px rgba(164, 198, 57, 0.8),
+    0 0 16px rgba(164, 198, 57, 0.4);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.main-menu__ticker-num {
+  font-family: 'Roboto Slab', serif;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(180deg, #FFE4A0 0%, #C9A961 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+
+.main-menu__ticker-sep {
+  color: rgba(201, 169, 97, 0.5);
+  letter-spacing: 0;
+  font-size: 10px;
+}
+
 /* ── Footer ───────────────────────────────────────────────── */
 
 .main-menu__footer {
-  color: rgba(139, 131, 120, 0.4);
+  color: rgba(139, 131, 120, 0.6);
   font-size: 10px;
-  padding: 16px 0 20px;
+  padding: 16px 0 56px;
   letter-spacing: 0.1em;
+}
+
+/* ── Panel corner cut-outs — TCG style notches ───────────── */
+
+.main-menu__panel::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 14px;
+  pointer-events: none;
+  background:
+    linear-gradient(to right,
+      rgba(201, 169, 97, 0.7) 0,
+      rgba(201, 169, 97, 0.7) 18px,
+      transparent 19px,
+      transparent calc(100% - 19px),
+      rgba(201, 169, 97, 0.7) calc(100% - 18px),
+      rgba(201, 169, 97, 0.7) 100%
+    ) top/100% 1px no-repeat,
+    linear-gradient(to right,
+      rgba(201, 169, 97, 0.7) 0,
+      rgba(201, 169, 97, 0.7) 18px,
+      transparent 19px,
+      transparent calc(100% - 19px),
+      rgba(201, 169, 97, 0.7) calc(100% - 18px),
+      rgba(201, 169, 97, 0.7) 100%
+    ) bottom/100% 1px no-repeat,
+    linear-gradient(to bottom,
+      rgba(201, 169, 97, 0.7) 0,
+      rgba(201, 169, 97, 0.7) 18px,
+      transparent 19px,
+      transparent calc(100% - 19px),
+      rgba(201, 169, 97, 0.7) calc(100% - 18px),
+      rgba(201, 169, 97, 0.7) 100%
+    ) left/1px 100% no-repeat,
+    linear-gradient(to bottom,
+      rgba(201, 169, 97, 0.7) 0,
+      rgba(201, 169, 97, 0.7) 18px,
+      transparent 19px,
+      transparent calc(100% - 19px),
+      rgba(201, 169, 97, 0.7) calc(100% - 18px),
+      rgba(201, 169, 97, 0.7) 100%
+    ) right/1px 100% no-repeat;
+  filter: drop-shadow(0 0 4px rgba(201, 169, 97, 0.5));
+}
+
+/* ── Spotlight sweeping above the panel ──────────────────── */
+
+.main-menu__spotlight {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  width: 220%;
+  height: 120%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 40% 80% at 50% 0%,
+      rgba(255, 230, 150, 0.18) 0%,
+      transparent 60%
+    );
+  filter: blur(4px);
+  animation: spotlight-sweep 6s ease-in-out infinite;
+  transform-origin: 50% 0%;
+}
+
+@keyframes spotlight-sweep {
+  0%, 100% { transform: translateX(-50%) skewX(-8deg) scaleX(1); opacity: 0.85; }
+  50%      { transform: translateX(-50%) skewX(8deg)  scaleX(1.05); opacity: 1; }
+}
+
+/* ── Edge lightning bolts — flash on left and right ──────── */
+
+.main-menu__content::before,
+.main-menu__content::after {
+  content: '';
+  position: absolute;
+  top: 18%;
+  bottom: 35%;
+  width: 80px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 50%,
+      rgba(180, 220, 255, 0.55) 0%,
+      transparent 60%
+    );
+  filter: blur(8px);
+  animation: edge-bolt 11s ease-in-out infinite;
+}
+
+.main-menu__content::before { left: 4%; }
+.main-menu__content::after  { right: 4%; animation-delay: -5s; }
+
+@keyframes edge-bolt {
+  0%, 92%, 100% { opacity: 0; }
+  93%           { opacity: 0.9; transform: scaleY(1); }
+  94%           { opacity: 0.2; transform: scaleY(0.9); }
+  95%           { opacity: 0.95; transform: scaleY(1.05); }
+  97%           { opacity: 0; }
+}
+
+/* ── Pulsing electric outline behind title ───────────────── */
+
+.main-menu__title-block::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 110%;
+  max-width: 720px;
+  height: calc(100% + 20px);
+  transform: translateX(-50%);
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 50%,
+      rgba(255, 220, 140, 0.28) 0%,
+      rgba(231, 76, 60, 0.12) 40%,
+      transparent 75%
+    );
+  filter: blur(8px);
+  animation: title-aura 4.5s ease-in-out infinite;
+}
+
+.main-menu__title,
+.main-menu__subtitle {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes title-aura {
+  0%, 100% { opacity: 0.65; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 1;    transform: translateX(-50%) scale(1.05); }
+}
+
+/* ── Hot-deal sticker — floats over the panel corner ─────── */
+
+.main-menu__sticker {
+  position: absolute;
+  top: -18px;
+  right: -14px;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%,
+      #FFE4A0 0%,
+      #E74C3C 40%,
+      #B0291C 100%
+    );
+  border: 2px solid #FFE4A0;
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.6),
+    0 0 24px rgba(231, 76, 60, 0.55),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.25),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Inter', system-ui, sans-serif;
+  text-transform: uppercase;
+  z-index: 3;
+  animation: sticker-pop 0.7s 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+             sticker-wobble 4s ease-in-out 1.5s infinite;
+  transform-origin: center;
+}
+
+.main-menu__sticker::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 220, 140, 0.45);
+  animation: sticker-ring 12s linear infinite;
+}
+
+.main-menu__sticker-line1 {
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(255, 220, 180, 0.95);
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.main-menu__sticker-line2 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 19px;
+  font-weight: 900;
+  color: #FFEEDA;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  margin: 2px 0;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.45),
+    0 0 8px rgba(255, 200, 120, 0.5);
+}
+
+.main-menu__sticker-line3 {
+  font-size: 8px;
+  font-weight: 700;
+  color: rgba(255, 220, 180, 0.85);
+  letter-spacing: 0.22em;
+  line-height: 1;
+}
+
+@keyframes sticker-pop {
+  0%   { opacity: 0; transform: scale(0) rotate(-160deg); }
+  70%  { opacity: 1; transform: scale(1.18) rotate(20deg); }
+  100% { opacity: 1; transform: scale(1) rotate(12deg); }
+}
+
+@keyframes sticker-wobble {
+  0%, 100% { transform: rotate(12deg) scale(1); }
+  50%      { transform: rotate(8deg) scale(1.04); }
+}
+
+@keyframes sticker-ring {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Title hover — pump up the volume ────────────────────── */
+
+.main-menu__title:hover {
+  animation:
+    title-shine 1.4s ease-in-out infinite,
+    title-glow-hover 1.6s ease-in-out infinite;
+  cursor: default;
+}
+
+@keyframes title-glow-hover {
+  0%, 100% {
+    filter:
+      drop-shadow(0 2px 0 rgba(0, 0, 0, 0.95))
+      drop-shadow(0 6px 14px rgba(0, 0, 0, 0.75))
+      drop-shadow(0 0 60px rgba(255, 220, 140, 0.7))
+      drop-shadow(0 0 90px rgba(231, 76, 60, 0.35));
+  }
+  50% {
+    filter:
+      drop-shadow(0 2px 0 rgba(0, 0, 0, 0.95))
+      drop-shadow(0 6px 14px rgba(0, 0, 0, 0.75))
+      drop-shadow(0 0 90px rgba(255, 240, 200, 0.95))
+      drop-shadow(0 0 140px rgba(255, 140, 80, 0.6));
+  }
 }
 
 /* ── Battle Layout ────────────────────────────────────────── */

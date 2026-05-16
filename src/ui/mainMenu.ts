@@ -28,10 +28,38 @@ export function renderMainMenu(container: HTMLElement): void {
       </div>
 
       <div class="main-menu__panel">
+        <div class="main-menu__sticker" aria-hidden="true">
+          <span class="main-menu__sticker-line1">Hot</span>
+          <span class="main-menu__sticker-line2">Q4<br/>SALE</span>
+          <span class="main-menu__sticker-line3">!!!</span>
+        </div>
+        <div class="main-menu__spotlight" aria-hidden="true"></div>
         <div class="main-menu__panel-inner" id="menu-buttons"></div>
       </div>
 
       <div class="main-menu__footer">v1.0 &mdash; &ldquo;The Q1 Release&rdquo;</div>
+    </div>
+
+    <div class="main-menu__ticker" aria-hidden="true">
+      <div class="main-menu__ticker-track">
+        <span class="main-menu__ticker-item">
+          <span class="main-menu__ticker-dot"></span> Live
+        </span>
+        <span class="main-menu__ticker-item"><span class="main-menu__ticker-num">12,847</span> Employees Online Now</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+        <span class="main-menu__ticker-item"><span class="main-menu__ticker-num">384,921</span> Battles Today</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+        <span class="main-menu__ticker-item">&#127942; Ranked <span class="main-menu__ticker-num">#1</span> Office TCG</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+        <span class="main-menu__ticker-item">&#127881; Q4 Bonus Cards Dropping Now</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+        <span class="main-menu__ticker-item"><span class="main-menu__ticker-num">5.0&#9733;</span> Glassdoor Approved</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+        <span class="main-menu__ticker-item">&#128293; <span class="main-menu__ticker-num">+47%</span> Synergy This Week</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+        <span class="main-menu__ticker-item">&#128202; <span class="main-menu__ticker-num">98%</span> Recommend to a Friend</span>
+        <span class="main-menu__ticker-sep">&#9670;</span>
+      </div>
     </div>
   `;
 
