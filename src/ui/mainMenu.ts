@@ -1,5 +1,45 @@
 import { setScreen } from '../store';
 
+const ACCENT_HEX: Record<string, string[]> = {
+  green: ['#A4C639', '#D8F082', '#E0F4A8', '#FFFFFF'],
+  red:   ['#E74C3C', '#FFB5A5', '#FFE4A0', '#FFFFFF'],
+  teal:  ['#4FA0BC', '#B5E4F0', '#FFE4A0', '#FFFFFF'],
+  gold:  ['#C9A961', '#FFE4A0', '#FFF1B8', '#FFFFFF'],
+};
+
+function burst(target: HTMLElement, ev: MouseEvent, accent: keyof typeof ACCENT_HEX): void {
+  const colors = ACCENT_HEX[accent] ?? ACCENT_HEX.gold;
+  const rect = target.getBoundingClientRect();
+  const x = ev.clientX - rect.left;
+  const y = ev.clientY - rect.top;
+
+  // Shock-ring at click point
+  const ring = document.createElement('span');
+  ring.className = 'menu-burst__ring';
+  ring.style.left = `${x}px`;
+  ring.style.top = `${y}px`;
+  ring.style.setProperty('--c', colors[0]);
+  target.appendChild(ring);
+  setTimeout(() => ring.remove(), 700);
+
+  // 18 confetti particles fan out from click
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('span');
+    p.className = 'menu-burst__particle';
+    const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.4;
+    const dist = 70 + Math.random() * 70;
+    p.style.left = `${x}px`;
+    p.style.top = `${y}px`;
+    p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+    p.style.setProperty('--dy', `${Math.sin(angle) * dist - 12}px`);
+    p.style.setProperty('--c', colors[Math.floor(Math.random() * colors.length)]);
+    p.style.setProperty('--rot', `${Math.random() * 720 - 360}deg`);
+    p.style.setProperty('--delay', `${Math.random() * 60}ms`);
+    target.appendChild(p);
+    setTimeout(() => p.remove(), 900);
+  }
+}
+
 export function renderMainMenu(container: HTMLElement): void {
   container.innerHTML = '';
 
@@ -96,9 +136,29 @@ export function renderMainMenu(container: HTMLElement): void {
       </span>
       <span class="main-menu__btn-arrow" aria-hidden="true">&rsaquo;</span>
     `;
-    btn.onclick = () => setScreen(item.screen);
+    btn.onclick = (ev) => {
+      burst(ev.currentTarget as HTMLElement, ev as MouseEvent, item.accent);
+      // small delay so the burst is visible before screen swap
+      setTimeout(() => setScreen(item.screen), 180);
+    };
     btnContainer.appendChild(btn);
   }
+
+  // Mouse-following gold glow trail layer
+  const trail = document.createElement('div');
+  trail.className = 'main-menu__cursor';
+  trail.setAttribute('aria-hidden', 'true');
+  menu.appendChild(trail);
+
+  menu.addEventListener('mousemove', (ev) => {
+    const rect = menu.getBoundingClientRect();
+    trail.style.left = `${ev.clientX - rect.left}px`;
+    trail.style.top = `${ev.clientY - rect.top}px`;
+    trail.style.opacity = '1';
+  });
+  menu.addEventListener('mouseleave', () => {
+    trail.style.opacity = '0';
+  });
 
   container.appendChild(menu);
 }
