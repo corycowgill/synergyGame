@@ -128,6 +128,7 @@ export function renderMainMenu(container: HTMLElement): void {
     { label: 'Quick Battle', screen: 'battle',       desc: 'Skip the meeting. Get straight to combat', icon: '\u26A1',    accent: 'red' },
     { label: 'Deck Builder', screen: 'deck-builder', desc: 'Assemble your dream synergy team',       icon: '\u{1F0CF}', accent: 'teal' },
     { label: 'Card Gallery', screen: 'test-cards',   desc: 'Browse the entire roster',               icon: '\u{1F5C2}', accent: 'gold' },
+    { label: 'How to Play',  screen: 'faq',          desc: 'Rules, stats, matchups, and tips',      icon: '\u{2754}',   accent: 'teal' },
   ];
 
   for (const item of items) {

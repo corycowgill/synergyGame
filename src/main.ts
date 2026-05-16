@@ -6,6 +6,7 @@ import { allCards } from './data/cards';
 import { renderCard } from './ui/cardComponent';
 import { renderMainMenu } from './ui/mainMenu';
 import { renderDeckBuilder } from './ui/deckBuilder';
+import { renderFaqPage } from './ui/faqPage';
 import { mountBattle, unmountBattle } from './ui/battleScene';
 import { initBattle } from './engine/battle';
 import { startTutorial } from './engine/tutorial';
@@ -30,6 +31,10 @@ function render(): void {
 
     case 'deck-builder':
       renderDeckBuilder(app);
+      break;
+
+    case 'faq':
+      renderFaqPage(app);
       break;
 
     case 'battle': {

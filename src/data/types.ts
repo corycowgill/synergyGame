@@ -94,7 +94,7 @@ export type AbilityFn = (
 
 // ── UI / Store Types ────────────────────────────────────────
 
-export type Screen = 'main-menu' | 'deck-builder' | 'battle' | 'end-screen' | 'test-cards' | 'tutorial';
+export type Screen = 'main-menu' | 'deck-builder' | 'battle' | 'end-screen' | 'test-cards' | 'tutorial' | 'faq';
 
 export interface GameState {
   screen: Screen;
