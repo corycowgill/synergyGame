@@ -24,7 +24,15 @@ export function showCardInspector(def: CardDefinition): void {
   closeHint.textContent = 'Tap anywhere or press Esc to close';
   overlay.appendChild(closeHint);
 
-  overlay.addEventListener('click', () => hideCardInspector());
+  // Only allow dismiss after a fresh pointerdown — otherwise the
+  // pointerup that ends the opening long-press would close the
+  // inspector instantly. We listen for the next pointerdown that lands
+  // here (not the residual pointerup from the long-press).
+  const onPointerDown = () => hideCardInspector();
+  // Defer attaching the dismiss listener until after the current event
+  // cycle so the in-flight pointerup/click from the long-press is
+  // ignored
+  setTimeout(() => overlay.addEventListener('pointerdown', onPointerDown), 50);
 
   document.body.appendChild(overlay);
   activeInspector = overlay;
