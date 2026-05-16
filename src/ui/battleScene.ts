@@ -13,6 +13,15 @@ import {
   isActionAllowed, endTutorial,
 } from '../engine/tutorial';
 import { showTutorialOverlay, hideTutorialOverlay } from './tutorialOverlay';
+import { attachCardInspect } from './cardInspector';
+
+const STATUS_ICONS: Record<string, { icon: string; label: string }> = {
+  meeting:      { icon: '\u{1F4C5}', label: 'In Meeting' },     // calendar
+  caffeinated:  { icon: '☕',    label: 'Caffeinated' },    // coffee
+  burnout:      { icon: '\u{1F525}', label: 'Burnout' },        // fire
+  motivated:    { icon: '\u{1F4AA}', label: 'Motivated' },      // muscle
+  protected:    { icon: '\u{1F6E1}', label: 'Protected' },      // shield
+};
 
 let battleRoot: HTMLElement | null = null;
 let animating = false;
@@ -241,6 +250,22 @@ function renderBattle(state: BattleState): void {
     actionBar.appendChild(waiting);
   }
 
+  // Menu / exit button — always present, lives on the right
+  if (state.phase !== 'game-over') {
+    const menuBtn = document.createElement('button');
+    menuBtn.className = 'battle__btn battle__btn--menu';
+    menuBtn.title = 'Exit to Main Menu';
+    menuBtn.setAttribute('aria-label', 'Menu');
+    menuBtn.innerHTML = '☰';
+    menuBtn.onclick = () => {
+      if (confirm('Leave the current battle and return to the main menu?')) {
+        endTutorial();
+        setScreen('main-menu');
+      }
+    };
+    actionBar.appendChild(menuBtn);
+  }
+
   wrapper.appendChild(actionBar);
 
   // ── Battle log (collapsible activity ticker) ──
@@ -359,15 +384,27 @@ function renderFieldCard(
     const bar = document.createElement('div');
     bar.className = 'field-card__statuses';
     for (const s of card.statusEffects) {
+      const info = STATUS_ICONS[s.effect] ?? { icon: '?', label: s.effect };
       const badge = document.createElement('span');
       badge.className = `field-card__status field-card__status--${s.effect}`;
-      badge.textContent = s.effect;
+      badge.title = `${info.label} (${s.turnsRemaining}t)`;
+      badge.innerHTML = `<span class="field-card__status-icon">${info.icon}</span>`;
+      if (s.turnsRemaining > 1) {
+        const count = document.createElement('span');
+        count.className = 'field-card__status-count';
+        count.textContent = String(s.turnsRemaining);
+        badge.appendChild(count);
+      }
       bar.appendChild(badge);
     }
     el.appendChild(bar);
   }
 
   if (!isPlayer) el.classList.add('card--opponent');
+
+  // Long-press / right-click → fullscreen card inspector
+  attachCardInspect(el, card.definitionId);
+
   return el;
 }
 
