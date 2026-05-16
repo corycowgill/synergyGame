@@ -15,6 +15,18 @@ import {
 import { showTutorialOverlay, hideTutorialOverlay } from './tutorialOverlay';
 import { attachCardInspect } from './cardInspector';
 
+// Pseudo-random "office event" that gets picked once per battle and
+// surfaces as a ribbon in the middle of the play mat
+const OFFICE_EVENTS: { tag: string; icon: string; text: string }[] = [
+  { tag: 'Q4',     icon: '\u{1F525}', text: 'Quarter-End Crunch' },
+  { tag: 'All-Hands', icon: '\u{1F4E3}', text: 'Mandatory All-Hands' },
+  { tag: 'OOO',    icon: '\u{1F334}', text: 'Half the Team is OOO' },
+  { tag: 'Audit',  icon: '\u{1F50D}', text: 'Surprise Audit' },
+  { tag: 'Reorg',  icon: '\u{1F501}', text: 'Reorg Rumors Spreading' },
+  { tag: 'Sales',  icon: '\u{1F4C8}', text: 'End-of-Quarter Sales Push' },
+];
+let activeEvent: typeof OFFICE_EVENTS[number] | null = null;
+
 const STATUS_ICONS: Record<string, { icon: string; label: string }> = {
   meeting:      { icon: '\u{1F4C5}', label: 'In Meeting' },     // calendar
   caffeinated:  { icon: '☕',    label: 'Caffeinated' },    // coffee
@@ -29,6 +41,8 @@ let logExpanded = false;
 
 export function mountBattle(container: HTMLElement, state: BattleState): void {
   battleRoot = container;
+  // Pick a fresh office event for this battle
+  activeEvent = OFFICE_EVENTS[Math.floor(Math.random() * OFFICE_EVENTS.length)];
   renderBattle(state);
   showTutorialIfActive();
 }
@@ -188,6 +202,18 @@ function renderBattle(state: BattleState): void {
   motes.setAttribute('aria-hidden', 'true');
   wrapper.appendChild(motes);
 
+  // Global office event ribbon — sits over the centerline
+  if (activeEvent) {
+    const event = document.createElement('div');
+    event.className = 'battle__event';
+    event.innerHTML = `
+      <span class="battle__event-icon" aria-hidden="true">${activeEvent.icon}</span>
+      <span>${activeEvent.text}</span>
+      <span class="battle__event-tag">${activeEvent.tag}</span>
+    `;
+    wrapper.appendChild(event);
+  }
+
   // ── Opponent side ──
   const oppSection = document.createElement('div');
   oppSection.className = 'battle__side battle__side--opp';
@@ -197,7 +223,7 @@ function renderBattle(state: BattleState): void {
   const oppBench = document.createElement('div');
   oppBench.className = 'battle__bench';
   for (const card of state.opponent.bench) {
-    oppBench.appendChild(renderFieldCard(card, 'bench', false));
+    oppBench.appendChild(renderBenchOrb(card, false));
   }
   oppSection.appendChild(oppBench);
 
@@ -294,8 +320,9 @@ function renderBattle(state: BattleState): void {
   const playerBench = document.createElement('div');
   playerBench.className = 'battle__bench';
   for (const card of state.player.bench) {
-    const benchEl = renderFieldCard(card, 'bench', true);
+    const benchEl = renderBenchOrb(card, true);
     if (state.currentTurn === 'player' && state.phase === 'sprint' && !animating) {
+      benchEl.classList.add('bench-orb--swappable');
       benchEl.addEventListener('click', () => {
         if (!tutorialGate('swap')) return;
         if (swapActive(state, card.instanceId)) {
@@ -478,6 +505,40 @@ function showDamageNumber(parent: HTMLElement, amount: number): void {
   parent.style.position = 'relative';
   parent.appendChild(el);
   setTimeout(() => el.remove(), 800);
+}
+
+// Compact circular portrait used on the bench — portrait, HP ring, cost
+function renderBenchOrb(card: CardInstance, isPlayer: boolean): HTMLElement {
+  const def = getCard(card.definitionId);
+  const el = document.createElement('div');
+  el.className = `bench-orb ${isPlayer ? 'bench-orb--player' : 'bench-orb--opp'}`;
+  el.dataset.cardId = def.id;
+  el.title = `${def.name} — ${card.currentMorale}/${card.maxMorale} Morale`;
+
+  const hpPct = Math.max(0, Math.min(100, (card.currentMorale / card.maxMorale) * 100));
+  // Stroke-dasharray on an SVG circle: circumference ≈ 2π·22 = 138.23
+  const C = 138.23;
+  const dash = (hpPct / 100) * C;
+  const hpColor = hpPct > 50 ? '#7BB07F' : hpPct > 25 ? '#E0BF6A' : '#E74C3C';
+
+  el.innerHTML = `
+    <svg class="bench-orb__ring" viewBox="0 0 50 50" aria-hidden="true">
+      <circle cx="25" cy="25" r="22" class="bench-orb__ring-track"/>
+      <circle cx="25" cy="25" r="22" class="bench-orb__ring-fill"
+        stroke="${hpColor}"
+        stroke-dasharray="${dash} ${C}"
+        transform="rotate(-90 25 25)" />
+    </svg>
+    <div class="bench-orb__portrait">
+      <img src="${def.imagePath}" alt="" loading="lazy" />
+    </div>
+    <span class="bench-orb__cost" aria-label="cost">${def.energyCost}</span>
+    ${card.statusEffects.length ? `<span class="bench-orb__status-dot" title="${card.statusEffects.length} status effect(s)"></span>` : ''}
+  `;
+
+  // Long-press inspect works on bench orbs too
+  attachCardInspect(el, def.id);
+  return el;
 }
 
 function renderFieldCard(

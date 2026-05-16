@@ -12,10 +12,23 @@ export function renderHand(
   const el = document.createElement('div');
   el.className = 'hand';
 
-  for (const id of cardIds) {
+  const center = (cardIds.length - 1) / 2;
+  // Tight curl for big hands so cards still fit; gentler for small hands
+  const tilt = cardIds.length <= 5 ? 6 : cardIds.length <= 7 ? 4.5 : 3.5;
+  const dip  = cardIds.length <= 5 ? 6 : cardIds.length <= 7 ? 4 : 3;
+
+  for (let i = 0; i < cardIds.length; i++) {
+    const id = cardIds[i];
     const def = getCard(id);
     const card = renderCard(def, 'hand');
     const canAfford = energy >= def.energyCost;
+
+    // Fan: rotate each card around its bottom-center based on its offset
+    // from the middle of the hand, and dip the wings slightly downward
+    const offset = i - center;
+    card.style.setProperty('--hand-rot', `${offset * tilt}deg`);
+    card.style.setProperty('--hand-dip', `${Math.abs(offset) * dip}px`);
+    card.style.zIndex = String(100 - Math.abs(Math.round(offset)));
 
     if (!canAfford) {
       card.classList.add('card--unplayable');
