@@ -16,6 +16,7 @@ import { showTutorialOverlay, hideTutorialOverlay } from './tutorialOverlay';
 
 let battleRoot: HTMLElement | null = null;
 let animating = false;
+let logExpanded = false;
 
 export function mountBattle(container: HTMLElement, state: BattleState): void {
   battleRoot = container;
@@ -59,12 +60,6 @@ function afterTutorialAction(): void {
 function renderBattle(state: BattleState): void {
   if (!battleRoot) return;
   battleRoot.innerHTML = '';
-
-  // Premium brand header sits ABOVE the play mat
-  const brand = document.createElement('div');
-  brand.className = 'battle__brand';
-  brand.innerHTML = `<span class="battle__brand-mark">Performance Review &middot; Q4</span>`;
-  battleRoot.appendChild(brand);
 
   const wrapper = document.createElement('div');
   wrapper.className = 'battle';
@@ -242,25 +237,42 @@ function renderBattle(state: BattleState): void {
   } else if (state.currentTurn === 'opponent') {
     const waiting = document.createElement('div');
     waiting.className = 'battle__waiting';
-    waiting.textContent = 'Opponent is thinking...';
+    waiting.textContent = 'Opponent thinking';
     actionBar.appendChild(waiting);
   }
 
   wrapper.appendChild(actionBar);
 
-  // ── Battle log ──
+  // ── Battle log (collapsible activity ticker) ──
   const log = document.createElement('div');
-  log.className = 'battle__log';
-  for (const entry of state.log.slice(-8)) {
+  log.className = `battle__log${logExpanded ? ' battle__log--open' : ''}`;
+  log.setAttribute('role', 'log');
+
+  const entries = state.log.slice(-12);
+  // When collapsed, only the most recent entry shows; when open, all do
+  for (const entry of entries) {
     const line = document.createElement('div');
     line.className = 'battle__log-entry';
     line.textContent = entry;
     log.appendChild(line);
   }
+
+  const toggle = document.createElement('span');
+  toggle.className = 'battle__log-toggle';
+  toggle.textContent = logExpanded ? 'Hide ▲' : 'Log ▼';
+  log.appendChild(toggle);
+
+  log.addEventListener('click', () => {
+    logExpanded = !logExpanded;
+    log.classList.toggle('battle__log--open', logExpanded);
+    toggle.textContent = logExpanded ? 'Hide ▲' : 'Log ▼';
+    if (logExpanded) log.scrollTop = log.scrollHeight;
+  });
+
   wrapper.appendChild(log);
 
   battleRoot.appendChild(wrapper);
-  log.scrollTop = log.scrollHeight;
+  if (logExpanded) log.scrollTop = log.scrollHeight;
 }
 
 // ── Animated actions ────────────────────────────────────────

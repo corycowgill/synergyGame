@@ -92,23 +92,23 @@
 /* ── Size variants ─────────────────────────────────────── */
 
 .card--hand {
-  width: 140px;
-  height: 210px;
-  font-size: 9px;
+  width: 132px;
+  height: 198px;
+  font-size: 8.5px;
   border-radius: 8px;
 }
 
 .card--active {
-  width: 220px;
-  height: 340px;
-  font-size: 12px;
+  width: 180px;
+  height: 270px;
+  font-size: 10px;
 }
 
 .card--bench {
-  width: 110px;
-  height: 165px;
-  font-size: 7.5px;
-  border-radius: 8px;
+  width: 90px;
+  height: 135px;
+  font-size: 6.5px;
+  border-radius: 7px;
 }
 
 .card--grid {
