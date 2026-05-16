@@ -3,7 +3,7 @@ import './styles/cards.css';
 import './styles/battle.css';
 
 import { allCards } from './data/cards';
-import { renderCard } from './ui/cardComponent';
+import { renderFlipCard } from './ui/flipCard';
 import { renderMainMenu } from './ui/mainMenu';
 import { renderDeckBuilder } from './ui/deckBuilder';
 import { renderFaqPage } from './ui/faqPage';
@@ -82,7 +82,7 @@ function renderTestCards(): void {
   grid.className = 'test-cards__grid';
 
   for (const card of allCards) {
-    grid.appendChild(renderCard(card, 'grid'));
+    grid.appendChild(renderFlipCard(card));
   }
 
   container.appendChild(grid);
