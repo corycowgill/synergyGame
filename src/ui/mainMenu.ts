@@ -68,11 +68,11 @@ export function renderMainMenu(container: HTMLElement): void {
       </div>
 
       <div class="main-menu__panel">
-        <div class="main-menu__sticker" aria-hidden="true">
+        <button class="main-menu__sticker" type="button" aria-label="Q4 sale (dismiss)">
           <span class="main-menu__sticker-line1">Hot</span>
           <span class="main-menu__sticker-line2">Q4<br/>SALE</span>
           <span class="main-menu__sticker-line3">!!!</span>
-        </div>
+        </button>
         <div class="main-menu__spotlight" aria-hidden="true"></div>
         <div class="main-menu__panel-inner" id="menu-buttons"></div>
       </div>
@@ -104,6 +104,15 @@ export function renderMainMenu(container: HTMLElement): void {
   `;
 
   const btnContainer = menu.querySelector('#menu-buttons')!;
+
+  // Tap the Q4 SALE sticker to dismiss it
+  const sticker = menu.querySelector<HTMLButtonElement>('.main-menu__sticker');
+  if (sticker) {
+    sticker.addEventListener('click', () => {
+      sticker.classList.add('main-menu__sticker--dismissed');
+      setTimeout(() => sticker.remove(), 400);
+    });
+  }
 
   type MenuItem = {
     label: string;
@@ -201,10 +210,16 @@ export function renderMainMenu(container: HTMLElement): void {
     setTimeout(() => t.remove(), 3200);
   }
 
-  // Toast cadence: stagger a bunch, then one every 1.6-2.8s
-  setTimeout(spawnToast, 900);
-  setTimeout(spawnToast, 1800);
-  setInterval(spawnToast, 2000);
+  // Toast cadence: occasional, calm down after a few so the menu
+  // doesn't feel like spammy notifications
+  let toastsLeft = 4;
+  const tick = () => {
+    if (toastsLeft-- <= 0) return;
+    if (!document.body.contains(menu)) return;
+    spawnToast();
+    setTimeout(tick, 4500 + Math.random() * 2000);
+  };
+  setTimeout(tick, 1800);
 
   container.appendChild(menu);
 }

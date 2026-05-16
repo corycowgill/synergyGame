@@ -55,16 +55,17 @@ function showTutorialIfActive(): void {
 }
 
 function handleTutorialAdvance(): void {
+  // Track what step we were on *before* advancing so the finish overlay
+  // gets shown to the user and only then sends them back to the menu
+  const prev = getTutorialStep();
   const next = advanceTutorial();
   if (!next) {
     hideTutorialOverlay();
     endTutorial();
-    return;
-  }
-  if (next.action.type === 'finish') {
-    hideTutorialOverlay();
-    endTutorial();
-    setScreen('main-menu');
+    // We just dismissed the celebratory "finish" step → return to menu
+    if (prev?.action.type === 'finish') {
+      setScreen('main-menu');
+    }
     return;
   }
   showTutorialOverlay(next, () => handleTutorialAdvance());
@@ -485,9 +486,12 @@ function doEndTurn(state: BattleState): void {
   if (!state.winner && state.currentTurn === 'opponent') {
     setTimeout(() => {
       if (isTutorialActive()) {
-        // Tutorial AI: just attack and end turn
+        // Tutorial AI: just attack and end turn. After the turn flips
+        // back to the player, top them up so they always have enough
+        // bandwidth to execute the scripted tutorial steps
         attack(state);
         endTurn(state);
+        state.player.energy = Math.max(state.player.energy, 5);
       } else {
         runAiTurn(state);
       }

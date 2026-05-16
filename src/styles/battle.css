@@ -1052,9 +1052,18 @@
   font-family: 'Inter', system-ui, sans-serif;
   text-transform: uppercase;
   z-index: 3;
+  cursor: pointer;
+  padding: 0;
   animation: sticker-pop 0.7s 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both,
              sticker-wobble 4s ease-in-out 1.5s infinite;
   transform-origin: center;
+  transition: opacity 0.35s, transform 0.35s;
+}
+
+.main-menu__sticker--dismissed {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.4);
+  animation: none;
 }
 
 .main-menu__sticker::before {
@@ -1296,9 +1305,9 @@
 .battle__side {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
-  padding: 6px 12px 4px;
+  padding: 4px 12px;
   border-radius: 12px;
   background: linear-gradient(180deg,
     rgba(0, 0, 0, 0.25) 0%,
@@ -1307,9 +1316,10 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   position: relative;
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-height: 0;
   justify-content: center;
+  overflow: hidden;
 }
 
 /* Tiny zone label badge on the upper corner of each side */
@@ -2538,8 +2548,10 @@
   gap: 12px;
   justify-content: center;
   align-items: center;
-  padding: 4px 0;
+  padding: 8px 0 4px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 4;
 }
 
 .battle__game-over {
@@ -3336,16 +3348,34 @@
   .main-menu__btn-icon { width: 30px; height: 30px; font-size: 18px; }
 
   /* Battle layout */
-  .battle { padding: 8px; gap: 4px; }
+  .battle { padding: 14px 10px 8px; gap: 4px; }
 
   /* Cards scale down */
-  .card--active { width: 150px; height: 230px; font-size: 9px; }
-  .card--bench { width: 75px; height: 112px; font-size: 6.5px; }
-  .card--hand { width: 100px; height: 150px; font-size: 7.5px; }
+  .card--active { width: 140px; height: 210px; font-size: 8px; }
+  .card--hand { width: 110px; height: 165px; font-size: 7.5px; }
   .card--grid { width: 150px; height: 230px; font-size: 9px; }
 
-  .battle__bench { gap: 4px; }
-  .battle__empty-slot { width: 140px; height: 70px; }
+  /* Bench orbs slightly smaller; bench row gap tighter */
+  .bench-orb { width: 50px; height: 50px; }
+  .bench-orb__cost { width: 17px; height: 17px; font-size: 10px; }
+  .battle__bench { gap: 6px; }
+  .battle__empty-slot { width: 140px; height: 60px; }
+
+  /* Hand fan: less negative overlap on mobile so cards stay scannable */
+  .hand { padding: 18px 12px 4px; }
+  .hand .card { margin: 0 -14px; }
+  .hand .card:not(.card--unplayable):hover {
+    transform: rotate(0deg) translateY(-20px) scale(1.12);
+    margin: 0 8px;
+  }
+
+  /* Make HP read clearly on small cards */
+  .field-card__hp { padding: 5px 6px 6px; }
+  .field-card__hp-bar { height: 7px; }
+  .field-card__hp-text { font-size: 11px; }
+
+  /* Active card halo pulled in tighter so it doesn't push layout */
+  .field-card-halo { inset: -5px; border-radius: 12px; }
 
   /* HUD compact */
   .hud { padding: 8px 10px; gap: 10px; border-radius: 12px; }
@@ -3404,36 +3434,76 @@
   .main-menu__btn-desc { font-size: 10px; }
   .main-menu__btn-icon { width: 28px; height: 28px; font-size: 16px; }
 
-  .card--active { width: 120px; height: 184px; font-size: 8px; }
-  .card--bench { width: 65px; height: 97px; font-size: 5.5px; }
-  .card--hand { width: 80px; height: 120px; font-size: 6.5px; }
+  /* Compact buzzword toasts on phones — less screaming */
+  .main-menu__toast { font-size: 10px; padding: 6px 10px; }
+  .main-menu__sticker { width: 60px; height: 60px; top: -12px; right: -8px; }
+  .main-menu__sticker-line2 { font-size: 14px; }
+
+  /* Battle: even tighter for iPhone */
+  .battle { padding: 8px 6px 4px; gap: 2px; }
+  .card--active { width: 100px; height: 150px; font-size: 6.5px; }
+  .card--hand { width: 84px; height: 126px; font-size: 6.5px; }
   .card--grid { width: 105px; height: 160px; font-size: 7px; }
 
-  .hand { gap: 3px; }
+  /* Active card's spotlight padding eats vertical space — kill it on iPhone */
+  .battle__active { padding: 0; }
+  .battle__active::before,
+  .battle__active::after { display: none; }
+  .battle__active-card-wrap { display: block; }
 
-  .battle__btn { padding: 5px 10px; font-size: 11px; }
-  .battle__btn--attack { padding: 6px 16px; }
-  .battle__btn--ability { font-size: 9px; padding: 3px 6px; }
+  /* Bench orbs even smaller on phones */
+  .bench-orb { width: 42px; height: 42px; }
+  .bench-orb__cost { width: 15px; height: 15px; font-size: 9px; }
+  .bench-orb__portrait { inset: 3px; }
+  .battle__bench { gap: 4px; }
 
-  .hud { flex-wrap: wrap; gap: 6px; padding: 6px 8px; }
-  .hud__identity { gap: 8px; }
-  .hud__avatar { width: 30px; height: 30px; }
-  .hud__avatar-initial { font-size: 13px; }
-  .hud__label { font-size: 10px; }
-  .hud__subtitle { font-size: 8px; }
-  .hud__stat { padding: 3px 6px; gap: 4px; }
-  .hud__stat-icon { width: 16px; height: 16px; font-size: 11px; }
+  /* Hand fan: gentler tilt + minimal overlap so all cards are scannable */
+  .hand { padding: 14px 8px 2px; }
+  .hand .card { margin: 0 -6px; }
+  .hand .card:not(.card--unplayable):hover {
+    transform: rotate(0deg) translateY(-14px) scale(1.08);
+    margin: 0 4px;
+  }
+
+  .battle__btn { padding: 6px 12px; font-size: 11px; }
+  .battle__btn--attack { padding: 7px 18px; font-size: 12px; }
+  .battle__btn--ability { font-size: 9px; padding: 3px 8px; }
+  .battle__btn--menu { width: 32px; height: 32px; font-size: 15px; right: 8px; }
+
+  /* HUD compact for iPhone — keep all three stats visible */
+  .hud {
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    max-width: 100%;
+  }
+  .hud__avatar { width: 26px; height: 26px; }
+  .hud__avatar-initial { font-size: 12px; }
+  .hud__label { font-size: 10px; margin-right: 0; }
+  .hud__stats { gap: 4px; }
+  .hud__stat { padding: 2px 6px; gap: 3px; }
+  .hud__stat-icon { font-size: 10px; }
   .hud__stat-value { font-size: 12px; }
-  .hud__stat-label { font-size: 7px; letter-spacing: 0.1em; }
+  .hud__stat-label { font-size: 8px; letter-spacing: 0.06em; }
+
+  /* HP bar on field cards — bump for readability on small screens */
+  .field-card__hp { padding: 4px 5px 5px; }
+  .field-card__hp-bar { height: 6px; }
+  .field-card__hp-text { font-size: 10px; font-weight: 800; }
+
+  /* Event ribbon doesn't get in the way */
+  .battle__event { font-size: 9px; padding: 4px 10px; left: 8px; max-width: 160px; }
+  .battle__event-tag { font-size: 7px; }
 
   .battle__game-over { font-size: 18px; }
-  .battle__log { max-height: 60px; }
+  .battle__log { font-size: 10px; }
+  .battle__log-entry { font-size: 10px; padding-right: 38px; }
+  .battle__log-toggle { font-size: 8px; right: 6px; }
 
-  .tutorial-tooltip { width: 220px; padding: 10px; }
+  .tutorial-tooltip { width: 240px; padding: 10px; }
   .tutorial-tooltip__message { font-size: 12px; line-height: 1.4; }
 
-  /* Bench cards hide abilities and flavor on mobile */
-  .card--bench .card__footer { display: none; }
   .card--hand .card__abilities { display: none; }
   .card--hand .card__footer { display: none; }
 }
