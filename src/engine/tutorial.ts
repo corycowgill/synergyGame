@@ -68,6 +68,10 @@ export function isActionAllowed(actionType: string, detail?: string): boolean {
   if (step.action.type === 'use-ability' && actionType === 'use-ability') {
     return step.action.abilityId === detail;
   }
+  if (step.action.type === 'swap' && actionType === 'swap') {
+    // If the step pins a specific card, require it; otherwise any swap counts
+    return !step.action.cardId || step.action.cardId === detail;
+  }
 
   return true;
 }

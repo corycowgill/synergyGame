@@ -325,7 +325,7 @@ function renderBattle(state: BattleState): void {
     if (state.currentTurn === 'player' && state.phase === 'sprint' && !animating) {
       benchEl.classList.add('bench-orb--swappable');
       benchEl.addEventListener('click', () => {
-        if (!tutorialGate('swap')) return;
+        if (!tutorialGate('swap', card.definitionId)) return;
         if (swapActive(state, card.instanceId)) {
           syncAndRender(state);
           afterTutorialAction();
@@ -602,6 +602,10 @@ function syncAndRender(state: BattleState): void {
   setBattle({ ...state });
   if (state.winner) state.phase = 'game-over';
   renderBattle(state);
+  // After re-render the spotlight target may have moved (e.g. End Turn
+  // button only just appeared once the attack animation finished). Make
+  // sure the tutorial overlay points at the right element.
+  showTutorialIfActive();
 }
 
 export function unmountBattle(): void {

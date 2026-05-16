@@ -2,13 +2,22 @@ import type { TutorialStep } from '../data/tutorialSteps';
 
 let overlayEl: HTMLElement | null = null;
 let onAdvance: (() => void) | null = null;
+let pendingFrame: number | null = null;
 
 export function showTutorialOverlay(step: TutorialStep, advanceFn: () => void): void {
+  // Cancel any previously-scheduled show so we don't double-render an
+  // overlay when state changes flush in close succession (e.g. after a
+  // turn ends + an advance fires synchronously)
+  if (pendingFrame != null) {
+    cancelAnimationFrame(pendingFrame);
+    pendingFrame = null;
+  }
   hideTutorialOverlay();
   onAdvance = advanceFn;
 
   // Wait a frame so the DOM element we're highlighting has been laid out
-  requestAnimationFrame(() => {
+  pendingFrame = requestAnimationFrame(() => {
+    pendingFrame = null;
     const target = document.querySelector(step.highlight);
     const rect = target?.getBoundingClientRect();
 
@@ -19,7 +28,7 @@ export function showTutorialOverlay(step: TutorialStep, advanceFn: () => void): 
     // Spotlight cutout — darkens everything except the highlighted element
     const spotlight = document.createElement('div');
     spotlight.className = 'tutorial-spotlight';
-    if (rect) {
+    if (rect && (rect.width > 0 || rect.height > 0)) {
       const pad = 6;
       spotlight.style.top = `${rect.top - pad}px`;
       spotlight.style.left = `${rect.left - pad}px`;
@@ -33,7 +42,7 @@ export function showTutorialOverlay(step: TutorialStep, advanceFn: () => void): 
     tooltip.className = `tutorial-tooltip tutorial-tooltip--${step.position}`;
 
     // Position tooltip relative to target
-    if (rect) {
+    if (rect && (rect.width > 0 || rect.height > 0)) {
       const tooltipWidth = 300;
       let top = 0;
       let left = rect.left + rect.width / 2 - tooltipWidth / 2;
@@ -82,9 +91,17 @@ export function showTutorialOverlay(step: TutorialStep, advanceFn: () => void): 
 }
 
 export function hideTutorialOverlay(): void {
+  if (pendingFrame != null) {
+    cancelAnimationFrame(pendingFrame);
+    pendingFrame = null;
+  }
   if (overlayEl) {
     overlayEl.remove();
     overlayEl = null;
   }
   onAdvance = null;
+}
+
+export function isTutorialOverlayShown(): boolean {
+  return overlayEl != null || pendingFrame != null;
 }

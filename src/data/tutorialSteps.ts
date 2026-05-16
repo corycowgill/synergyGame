@@ -11,7 +11,7 @@ export type TutorialAction =
   | { type: 'play-card'; cardId: string }
   | { type: 'attack' }
   | { type: 'use-ability'; abilityId: string }
-  | { type: 'swap' }
+  | { type: 'swap'; cardId?: string }
   | { type: 'end-turn' }
   | { type: 'finish' };
 
@@ -114,10 +114,10 @@ export const tutorialSteps: TutorialStep[] = [
   },
   {
     id: 'swap-active',
-    message: 'Now let\'s swap The Office Gossip to the active slot so we can use her ability. Click her on the bench.',
-    highlight: '.battle__side--player .battle__bench',
+    message: 'Now let\'s swap The Office Gossip to the active slot so we can use her ability. Click her portrait on the bench (the gold ring is the gossip).',
+    highlight: '.battle__side--player .bench-orb[data-card-id="the-office-gossip"]',
     position: 'above',
-    action: { type: 'swap' },
+    action: { type: 'swap', cardId: 'the-office-gossip' },
   },
   {
     id: 'use-ability',
