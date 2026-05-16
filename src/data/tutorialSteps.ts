@@ -86,7 +86,7 @@ export const tutorialSteps: TutorialStep[] = [
   },
   {
     id: 'do-attack',
-    message: 'Your active card can attack the opponent\'s active card! Damage = your Influence minus their Tenure defense. Department matchups matter too. Hit the Attack button!',
+    message: 'Your active card can escalate against the rival! Damage = your Influence minus their Tenure defense. Department matchups matter too. Hit Escalate — or drag your card onto the enemy.',
     highlight: '.battle__btn--attack',
     position: 'below',
     action: { type: 'attack' },
@@ -100,7 +100,7 @@ export const tutorialSteps: TutorialStep[] = [
   },
   {
     id: 'end-turn-1',
-    message: 'When you\'re done, press End Turn. The opponent takes their turn, then you get a new card and fresh energy.',
+    message: 'When you\'re done, press Clock Out. The rival takes their turn, then you get a fresh card and refilled Bandwidth.',
     highlight: '.battle__btn--end-turn',
     position: 'above',
     action: { type: 'end-turn' },

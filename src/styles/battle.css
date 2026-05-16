@@ -2007,6 +2007,241 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+/* ── Selected / "this is yours, act on it" active card halo ─ */
+
+.field-card-halo {
+  position: absolute;
+  inset: -10px;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 220, 140, 0.55);
+  pointer-events: none;
+  animation: active-frame-pulse 2.2s ease-in-out infinite;
+  box-shadow:
+    0 0 18px rgba(255, 220, 140, 0.35),
+    inset 0 0 22px rgba(255, 220, 140, 0.15);
+  z-index: 0;
+}
+
+@keyframes active-frame-pulse {
+  0%, 100% {
+    border-color: rgba(255, 220, 140, 0.45);
+    box-shadow: 0 0 14px rgba(255, 220, 140, 0.25), inset 0 0 18px rgba(255, 220, 140, 0.1);
+  }
+  50% {
+    border-color: rgba(255, 240, 180, 0.9);
+    box-shadow: 0 0 28px rgba(255, 220, 140, 0.55), inset 0 0 26px rgba(255, 220, 140, 0.2);
+  }
+}
+
+.battle__active-card-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* ── Drag-to-attack: hint and target highlight ───────────── */
+
+.field-card--draggable {
+  cursor: grab;
+}
+.field-card--draggable:active { cursor: grabbing; }
+
+.card--attacking-drag {
+  transform: scale(1.12) rotate(-1.5deg);
+  filter:
+    brightness(1.08)
+    drop-shadow(0 0 24px rgba(231, 76, 60, 0.7))
+    drop-shadow(0 16px 32px rgba(0, 0, 0, 0.7));
+  transition: none;
+}
+
+.field-card--attack-target {
+  outline: 2px dashed rgba(231, 76, 60, 0.65);
+  outline-offset: 4px;
+  border-radius: 14px;
+  animation: target-pulse 1s ease-in-out infinite;
+}
+
+.field-card--attack-target-active {
+  outline-color: #FF8060;
+  outline-style: solid;
+  outline-width: 3px;
+  filter:
+    drop-shadow(0 0 22px rgba(231, 76, 60, 0.7))
+    drop-shadow(0 0 44px rgba(255, 120, 80, 0.4));
+  animation: target-locked 0.4s ease-out infinite alternate;
+}
+
+@keyframes target-pulse {
+  0%, 100% { outline-color: rgba(231, 76, 60, 0.45); }
+  50%      { outline-color: rgba(255, 120, 80, 0.85); }
+}
+
+@keyframes target-locked {
+  from { transform: scale(1); }
+  to   { transform: scale(1.04); }
+}
+
+/* ── Critical HP — cracked bar + warning flash ───────────── */
+
+.field-card__hp--warning .field-card__hp-fill {
+  animation: hp-warning-flicker 1.4s ease-in-out infinite;
+}
+
+.field-card__hp--critical {
+  background: linear-gradient(180deg,
+    rgba(122, 30, 20, 0.85) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  animation: hp-critical-pulse 0.9s ease-in-out infinite;
+}
+
+.field-card__hp--critical .field-card__hp-text {
+  color: #FFB5A5;
+  text-shadow:
+    0 0 8px rgba(231, 76, 60, 0.85),
+    0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.field-card__hp-cracks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(110deg, transparent 30%, rgba(0, 0, 0, 0.7) 31%, transparent 32%) 0/100% 100%,
+    linear-gradient(70deg,  transparent 55%, rgba(0, 0, 0, 0.7) 56%, transparent 57%) 0/100% 100%,
+    linear-gradient(100deg, transparent 75%, rgba(0, 0, 0, 0.5) 76%, transparent 77%) 0/100% 100%;
+  mix-blend-mode: multiply;
+}
+
+.field-card__hp-bar { position: relative; }
+
+.field-card--critical {
+  animation: card-critical-shake 1.6s ease-in-out infinite;
+}
+
+@keyframes hp-warning-flicker {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.25); }
+}
+
+@keyframes hp-critical-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(231, 76, 60, 0); }
+  50%      { box-shadow: inset 0 0 12px 2px rgba(231, 76, 60, 0.45); }
+}
+
+@keyframes card-critical-shake {
+  0%, 92%, 100% { transform: translateX(0); }
+  94%           { transform: translateX(-2px); }
+  96%           { transform: translateX(2px); }
+  98%           { transform: translateX(-1px); }
+}
+
+/* ── Rarity legend — bottom-left of the play mat ──────────── */
+
+.battle__legend {
+  position: absolute;
+  bottom: 14px;
+  left: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  z-index: 3;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.battle__legend-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 999px;
+  background: rgba(20, 18, 15, 0.85);
+  border: 1px solid rgba(201, 169, 97, 0.35);
+  color: rgba(201, 169, 97, 0.85);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.battle__legend-toggle:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.battle__legend-toggle::before {
+  content: '?';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(201, 169, 97, 0.2);
+  border: 1px solid rgba(201, 169, 97, 0.4);
+  font-family: 'Roboto Slab', serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.battle__legend-panel {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(20, 18, 15, 0.96);
+  border: 1px solid rgba(201, 169, 97, 0.4);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-width: 200px;
+}
+
+.battle__legend--open .battle__legend-panel { display: flex; }
+
+.battle__legend-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 97, 0.85);
+  margin-bottom: 2px;
+}
+
+.battle__legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(245, 240, 232, 0.9);
+}
+
+.battle__legend-swatch {
+  width: 16px;
+  height: 12px;
+  border-radius: 3px;
+  border: 2px solid var(--swatch);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--swatch) 35%, transparent),
+    transparent
+  );
+  flex-shrink: 0;
+}
+
 /* ── Card Inspector — fullscreen modal ────────────────────── */
 
 .card-inspector {

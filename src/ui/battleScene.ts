@@ -61,6 +61,110 @@ function tutorialGate(actionType: string, detail?: string): boolean {
   return isActionAllowed(actionType, detail);
 }
 
+// ── Drag-to-attack: drop the player's active onto the opponent's active ───
+function enableDragToAttack(cardEl: HTMLElement, state: BattleState): void {
+  const DRAG_THRESHOLD = 14;
+  let startX = 0;
+  let startY = 0;
+  let dragging = false;
+  let pointerId: number | null = null;
+  let ghost: HTMLElement | null = null;
+  let targetEl: HTMLElement | null = null;
+
+  cardEl.style.touchAction = 'none';
+  cardEl.classList.add('field-card--draggable');
+
+  cardEl.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    // Don't engage drag when the press lands on a button next to the card
+    if ((e.target as HTMLElement).closest('button')) return;
+    startX = e.clientX;
+    startY = e.clientY;
+    pointerId = e.pointerId;
+  });
+
+  cardEl.addEventListener('pointermove', (e) => {
+    if (pointerId == null || e.pointerId !== pointerId) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!dragging) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      dragging = true;
+      cardEl.setPointerCapture(e.pointerId);
+      const rect = cardEl.getBoundingClientRect();
+      ghost = cardEl.cloneNode(true) as HTMLElement;
+      ghost.classList.add('card--attacking-drag');
+      ghost.style.position = 'fixed';
+      ghost.style.left = `${rect.left}px`;
+      ghost.style.top = `${rect.top}px`;
+      ghost.style.width = `${rect.width}px`;
+      ghost.style.height = `${rect.height}px`;
+      ghost.style.zIndex = '500';
+      ghost.style.pointerEvents = 'none';
+      document.body.appendChild(ghost);
+      cardEl.classList.add('card--dragging-source');
+      targetEl = document.getElementById('opp-active');
+      targetEl?.classList.add('field-card--attack-target');
+    }
+    if (ghost) {
+      ghost.style.left = `${e.clientX - ghost.offsetWidth / 2}px`;
+      ghost.style.top = `${e.clientY - ghost.offsetHeight / 2}px`;
+      if (targetEl) {
+        const r = targetEl.getBoundingClientRect();
+        const over =
+          e.clientX >= r.left && e.clientX <= r.right &&
+          e.clientY >= r.top && e.clientY <= r.bottom;
+        targetEl.classList.toggle('field-card--attack-target-active', over);
+      }
+    }
+  });
+
+  const cleanup = () => {
+    if (ghost) { ghost.remove(); ghost = null; }
+    cardEl.classList.remove('card--dragging-source');
+    if (targetEl) {
+      targetEl.classList.remove('field-card--attack-target');
+      targetEl.classList.remove('field-card--attack-target-active');
+    }
+    if (pointerId != null && cardEl.hasPointerCapture(pointerId)) {
+      cardEl.releasePointerCapture(pointerId);
+    }
+    pointerId = null;
+  };
+
+  cardEl.addEventListener('pointerup', (e) => {
+    if (pointerId == null || e.pointerId !== pointerId) return;
+    if (!dragging) { pointerId = null; return; }
+    let dropped = false;
+    if (targetEl) {
+      const r = targetEl.getBoundingClientRect();
+      dropped =
+        e.clientX >= r.left && e.clientX <= r.right &&
+        e.clientY >= r.top && e.clientY <= r.bottom;
+    }
+    const wasDragging = dragging;
+    dragging = false;
+    cleanup();
+    if (dropped) {
+      if (!tutorialGate('attack')) return;
+      doAttack(state);
+      afterTutorialAction();
+    }
+    if (wasDragging) {
+      // Swallow the click that follows the pointerup
+      cardEl.addEventListener('click', (ce) => {
+        ce.stopPropagation();
+        ce.preventDefault();
+      }, { once: true, capture: true });
+    }
+  });
+
+  cardEl.addEventListener('pointercancel', () => {
+    dragging = false;
+    cleanup();
+  });
+}
+
 function afterTutorialAction(): void {
   if (!isTutorialActive()) return;
   handleTutorialAdvance();
@@ -129,15 +233,30 @@ function renderBattle(state: BattleState): void {
   const playerActive = document.createElement('div');
   playerActive.className = 'battle__active';
   if (state.player.active) {
+    const cardWrap = document.createElement('div');
+    cardWrap.className = 'battle__active-card-wrap';
     const activeEl = renderFieldCard(state.player.active, 'active', true);
     activeEl.id = 'player-active';
-    playerActive.appendChild(activeEl);
+    if (state.currentTurn === 'player' && state.phase === 'sprint' && !animating) {
+      const halo = document.createElement('div');
+      halo.className = 'field-card-halo';
+      halo.setAttribute('aria-hidden', 'true');
+      cardWrap.appendChild(halo);
+    }
+    cardWrap.appendChild(activeEl);
+    playerActive.appendChild(cardWrap);
 
     if (state.currentTurn === 'player' && state.phase === 'sprint' && !animating) {
+      const canAttack = !state.player.active.hasAttacked && !!state.opponent.active;
+      if (canAttack) {
+        enableDragToAttack(activeEl, state);
+      }
+
       const atkBtn = document.createElement('button');
       atkBtn.className = 'battle__btn battle__btn--attack';
-      atkBtn.textContent = 'Attack';
+      atkBtn.innerHTML = '<span class="battle__btn-label">Escalate</span>';
       atkBtn.disabled = state.player.active.hasAttacked;
+      atkBtn.title = 'Click to escalate — or drag your card onto the rival';
       atkBtn.onclick = () => {
         if (!tutorialGate('attack')) return;
         doAttack(state);
@@ -236,7 +355,8 @@ function renderBattle(state: BattleState): void {
   } else if (state.currentTurn === 'player' && !animating) {
     const endBtn = document.createElement('button');
     endBtn.className = 'battle__btn battle__btn--end-turn';
-    endBtn.textContent = 'End Turn';
+    endBtn.innerHTML = '<span class="battle__btn-label">Clock Out</span>';
+    endBtn.title = 'End your turn (Clock Out for the day)';
     endBtn.onclick = () => {
       if (!tutorialGate('end-turn')) return;
       doEndTurn(state);
@@ -372,13 +492,18 @@ function renderFieldCard(
   const hpColor = hpPct > 50 ? '#4A7A5A' : hpPct > 25 ? '#C9A961' : '#C0392B';
   const hpOverlay = document.createElement('div');
   hpOverlay.className = 'field-card__hp';
+  if (hpPct <= 25) hpOverlay.classList.add('field-card__hp--critical');
+  else if (hpPct <= 50) hpOverlay.classList.add('field-card__hp--warning');
   hpOverlay.innerHTML = `
     <div class="field-card__hp-bar">
       <div class="field-card__hp-fill" style="width:${hpPct}%;background:${hpColor}"></div>
+      ${hpPct <= 25 ? '<div class="field-card__hp-cracks" aria-hidden="true"></div>' : ''}
     </div>
     <span class="field-card__hp-text">${card.currentMorale}/${card.maxMorale}</span>
   `;
   el.appendChild(hpOverlay);
+
+  if (hpPct <= 25) el.classList.add('field-card--critical');
 
   if (card.statusEffects.length > 0) {
     const bar = document.createElement('div');

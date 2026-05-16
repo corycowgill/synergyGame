@@ -105,11 +105,23 @@
 }
 
 .card--bench {
-  width: 90px;
-  height: 135px;
-  font-size: 6.5px;
-  border-radius: 7px;
+  width: 78px;
+  height: 116px;
+  font-size: 5.8px;
+  border-radius: 6px;
 }
+
+/* Bench cards trim their info to just the essentials — name, art, HP */
+.card--bench .card__abilities,
+.card--bench .card__flavor,
+.card--bench .card__stats,
+.card--bench .card__footer {
+  display: none;
+}
+
+.card--bench .card__header { padding: 2px 4px; }
+.card--bench .card__name { font-size: 1.05em; }
+.card--bench .card__cost { width: 1.6em; height: 1.6em; font-size: 1em; }
 
 .card--grid {
   width: 220px;
