@@ -138,8 +138,12 @@ export function renderMainMenu(container: HTMLElement): void {
     `;
     btn.onclick = (ev) => {
       burst(ev.currentTarget as HTMLElement, ev as MouseEvent, item.accent);
+      menu.classList.remove('main-menu--shake');
+      // force a reflow so the class can be re-applied and the animation restarts
+      void menu.offsetWidth;
+      menu.classList.add('main-menu--shake');
       // small delay so the burst is visible before screen swap
-      setTimeout(() => setScreen(item.screen), 180);
+      setTimeout(() => setScreen(item.screen), 220);
     };
     btnContainer.appendChild(btn);
   }
@@ -159,6 +163,48 @@ export function renderMainMenu(container: HTMLElement): void {
   menu.addEventListener('mouseleave', () => {
     trail.style.opacity = '0';
   });
+
+  // Floating buzzword toasts that drift up from random spots
+  const toastLayer = document.createElement('div');
+  toastLayer.className = 'main-menu__toasts';
+  toastLayer.setAttribute('aria-hidden', 'true');
+  menu.appendChild(toastLayer);
+
+  const BUZZWORDS = [
+    { icon: '⚡', text: '+10 SYNERGY',         tone: 'gold' },
+    { icon: '☕', text: 'COFFEE BREAK',         tone: 'teal' },
+    { icon: '📈', text: '+47% PRODUCTIVITY',    tone: 'green' },
+    { icon: '🔥', text: 'STRETCH GOAL HIT',     tone: 'red' },
+    { icon: '🏆', text: 'TEAM PLAYER UNLOCKED', tone: 'gold' },
+    { icon: '📊', text: 'KPI SMASHED',          tone: 'green' },
+    { icon: '💼', text: 'PROMOTION INCOMING',   tone: 'gold' },
+    { icon: '📎', text: 'SUPPLIES REPLENISHED', tone: 'teal' },
+    { icon: '✅', text: 'PIP AVOIDED',          tone: 'green' },
+    { icon: '🚀', text: 'PIVOTING TO GROWTH',   tone: 'red' },
+  ];
+
+  function spawnToast() {
+    // Stop firing once the menu has been swapped out of the DOM
+    if (!document.body.contains(menu)) return;
+    const buzz = BUZZWORDS[Math.floor(Math.random() * BUZZWORDS.length)];
+    const t = document.createElement('div');
+    t.className = `main-menu__toast main-menu__toast--${buzz.tone}`;
+    t.innerHTML = `<span class="main-menu__toast-icon">${buzz.icon}</span> ${buzz.text}`;
+    // Random horizontal position, but stay clear of the centered panel
+    const side = Math.random() < 0.5 ? 'left' : 'right';
+    const x = side === 'left'
+      ? Math.random() * 18 + 2  // 2vw - 20vw
+      : Math.random() * 18 + 80; // 80vw - 98vw
+    t.style.left = `${x}vw`;
+    t.style.top = `${60 + Math.random() * 25}%`;
+    toastLayer.appendChild(t);
+    setTimeout(() => t.remove(), 3200);
+  }
+
+  // Toast cadence: stagger a bunch, then one every 1.6-2.8s
+  setTimeout(spawnToast, 900);
+  setTimeout(spawnToast, 1800);
+  setInterval(spawnToast, 2000);
 
   container.appendChild(menu);
 }

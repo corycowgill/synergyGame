@@ -836,6 +836,97 @@
   50%      { opacity: 1;    transform: translateX(-50%) scale(1.05); }
 }
 
+/* ── Screen shake when a button is hit ───────────────────── */
+
+.main-menu--shake {
+  animation: menu-shake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes menu-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  10%      { transform: translate3d(-3px, 1px, 0) rotate(-0.3deg); }
+  25%      { transform: translate3d(4px, -2px, 0) rotate(0.4deg); }
+  40%      { transform: translate3d(-3px, 2px, 0) rotate(-0.3deg); }
+  55%      { transform: translate3d(3px, -1px, 0) rotate(0.2deg); }
+  70%      { transform: translate3d(-2px, 1px, 0); }
+  85%      { transform: translate3d(1px, 0, 0); }
+}
+
+/* ── Floating buzzword toasts ─────────────────────────────── */
+
+.main-menu__toasts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.main-menu__toast {
+  --tone: #C9A961;
+  --tone-bg: rgba(201, 169, 97, 0.18);
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #F5F0E8;
+  background:
+    linear-gradient(135deg,
+      var(--tone-bg),
+      rgba(20, 18, 15, 0.85)
+    );
+  border: 1px solid var(--tone);
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.55),
+    0 0 18px color-mix(in srgb, var(--tone) 50%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+  transform: translate(-50%, 0);
+  animation: toast-float 3.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.main-menu__toast-icon {
+  font-size: 16px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tone) 70%, transparent));
+}
+
+.main-menu__toast--gold  { --tone: #C9A961; --tone-bg: rgba(201, 169, 97, 0.22); }
+.main-menu__toast--green { --tone: #A4C639; --tone-bg: rgba(164, 198, 57, 0.22); }
+.main-menu__toast--red   { --tone: #E74C3C; --tone-bg: rgba(231, 76, 60, 0.22); color: #FFEDE8; }
+.main-menu__toast--teal  { --tone: #4FA0BC; --tone-bg: rgba(79, 160, 188, 0.22); }
+
+@keyframes toast-float {
+  0%   { opacity: 0; transform: translate(-50%, 20px) scale(0.85); }
+  12%  { opacity: 1; transform: translate(-50%, 0) scale(1.06); }
+  18%  { transform: translate(-50%, 0) scale(1); }
+  80%  { opacity: 1; transform: translate(-50%, -42px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -68px) scale(0.95); }
+}
+
+/* ── Title power-up on hover — explosive zoom + sparkle ──── */
+
+.main-menu__title-block:hover .main-menu__title {
+  transform: scale(1.06);
+  animation:
+    title-shine 0.9s ease-in-out infinite,
+    title-glow-hover 1.2s ease-in-out infinite;
+}
+
+.main-menu__title {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 /* ── Click burst — confetti + shock ring on button press ─── */
 
 .menu-burst__ring {
